@@ -13,7 +13,7 @@ jobs:
       fail-fast: true
       matrix:
         platform: [ubuntu-latest, windows-latest]
-        jdk_version: ['15-ea']
+        jdk_version: ['16']
         
     runs-on: ${{ matrix.platform }}
     steps:
