@@ -8,16 +8,16 @@ class MoveTest {
 
     @Test
     void castle() {
-        final Move move = Move.castle(BitBoard.POSITION[4], BitBoard.POSITION[6], Piece.WHITE | Piece.KING, BitBoard.POSITION[5] | BitBoard.POSITION[7]);
+        final Move move = Move.castle(Bitboard.INDEX[4], Bitboard.INDEX[6], Piece.WHITE | Piece.KING, Bitboard.INDEX[5] | Bitboard.INDEX[7]);
 
-        assertEquals(BitBoard.POSITION[4], move.getFrom());
-        assertEquals(BitBoard.POSITION[6], move.getTo());
+        assertEquals(Bitboard.INDEX[4], move.getFrom());
+        assertEquals(Bitboard.INDEX[6], move.getTo());
         assertEquals(Piece.WHITE | Piece.KING, move.getMovingPiece());
         assertEquals(Piece.EMPTY, move.getCapturedPiece());
         assertEquals(Piece.EMPTY, move.getPromotedToPiece());
-        assertEquals(BitBoard.EMPTY, move.getCapturedEnPassantPawn());
-        assertEquals(BitBoard.EMPTY, move.getEnPassantTarget());
-        assertEquals(BitBoard.POSITION[5] | BitBoard.POSITION[7], move.getCastleRookMove());
+        assertEquals(Bitboard.EMPTY, move.getCapturedEnPassantPawn());
+        assertEquals(Bitboard.EMPTY, move.getEnPassantTarget());
+        assertEquals(Bitboard.INDEX[5] | Bitboard.INDEX[7], move.getCastleRookMove());
         assertEquals(false, move.isCapture());
         assertEquals(false, move.isPromotion());
         assertEquals(false, move.isEnPassant());
@@ -29,16 +29,16 @@ class MoveTest {
 
     @Test
     void doublePush() {
-        final Move move = Move.doublePush(BitBoard.POSITION[10], BitBoard.POSITION[26], Piece.WHITE | Piece.PAWN, BitBoard.POSITION[18]);
+        final Move move = Move.doublePush(Bitboard.INDEX[10], Bitboard.INDEX[26], Piece.WHITE | Piece.PAWN, Bitboard.INDEX[18]);
 
-        assertEquals(BitBoard.POSITION[10], move.getFrom());
-        assertEquals(BitBoard.POSITION[26], move.getTo());
+        assertEquals(Bitboard.INDEX[10], move.getFrom());
+        assertEquals(Bitboard.INDEX[26], move.getTo());
         assertEquals(Piece.WHITE | Piece.PAWN, move.getMovingPiece());
         assertEquals(Piece.EMPTY, move.getCapturedPiece());
         assertEquals(Piece.EMPTY, move.getPromotedToPiece());
-        assertEquals(BitBoard.EMPTY, move.getCapturedEnPassantPawn());
-        assertEquals(BitBoard.POSITION[18], move.getEnPassantTarget());
-        assertEquals(BitBoard.EMPTY, move.getCastleRookMove());
+        assertEquals(Bitboard.EMPTY, move.getCapturedEnPassantPawn());
+        assertEquals(Bitboard.INDEX[18], move.getEnPassantTarget());
+        assertEquals(Bitboard.EMPTY, move.getCastleRookMove());
         assertEquals(false, move.isCapture());
         assertEquals(false, move.isPromotion());
         assertEquals(false, move.isEnPassant());
@@ -50,16 +50,16 @@ class MoveTest {
 
     @Test
     void enPassantCapture() {
-        final Move move = Move.enPassantCapture(BitBoard.POSITION[24], BitBoard.POSITION[33], Piece.WHITE | Piece.PAWN, Piece.BLACK | Piece.PAWN, BitBoard.POSITION[25]);
+        final Move move = Move.enPassantCapture(Bitboard.INDEX[24], Bitboard.INDEX[33], Piece.WHITE | Piece.PAWN, Piece.BLACK | Piece.PAWN, Bitboard.INDEX[25]);
 
-        assertEquals(BitBoard.POSITION[24], move.getFrom());
-        assertEquals(BitBoard.POSITION[33], move.getTo());
+        assertEquals(Bitboard.INDEX[24], move.getFrom());
+        assertEquals(Bitboard.INDEX[33], move.getTo());
         assertEquals(Piece.WHITE | Piece.PAWN, move.getMovingPiece());
         assertEquals(Piece.BLACK | Piece.PAWN, move.getCapturedPiece());
         assertEquals(Piece.EMPTY, move.getPromotedToPiece());
-        assertEquals(BitBoard.POSITION[25], move.getCapturedEnPassantPawn());
-        assertEquals(BitBoard.EMPTY, move.getEnPassantTarget());
-        assertEquals(BitBoard.EMPTY, move.getCastleRookMove());
+        assertEquals(Bitboard.INDEX[25], move.getCapturedEnPassantPawn());
+        assertEquals(Bitboard.EMPTY, move.getEnPassantTarget());
+        assertEquals(Bitboard.EMPTY, move.getCastleRookMove());
         assertEquals(true, move.isCapture());
         assertEquals(false, move.isPromotion());
         assertEquals(true, move.isEnPassant());
@@ -71,16 +71,16 @@ class MoveTest {
 
     @Test
     void pawnPromotionWithCapture() {
-        final Move move = Move.pawnPromotionWithCapture(BitBoard.POSITION[54], BitBoard.POSITION[63], Piece.WHITE | Piece.PAWN, Piece.KNIGHT, Piece.WHITE | Piece.ROOK);
+        final Move move = Move.pawnPromotionWithCapture(Bitboard.INDEX[54], Bitboard.INDEX[63], Piece.WHITE | Piece.PAWN, Piece.KNIGHT, Piece.WHITE | Piece.ROOK);
 
-        assertEquals(BitBoard.POSITION[54], move.getFrom());
-        assertEquals(BitBoard.POSITION[63], move.getTo());
+        assertEquals(Bitboard.INDEX[54], move.getFrom());
+        assertEquals(Bitboard.INDEX[63], move.getTo());
         assertEquals(Piece.WHITE | Piece.PAWN, move.getMovingPiece());
         assertEquals(Piece.BLACK | Piece.KNIGHT, move.getCapturedPiece());
         assertEquals(Piece.WHITE | Piece.ROOK, move.getPromotedToPiece());
-        assertEquals(BitBoard.EMPTY, move.getCapturedEnPassantPawn());
-        assertEquals(BitBoard.EMPTY, move.getEnPassantTarget());
-        assertEquals(BitBoard.EMPTY, move.getCastleRookMove());
+        assertEquals(Bitboard.EMPTY, move.getCapturedEnPassantPawn());
+        assertEquals(Bitboard.EMPTY, move.getEnPassantTarget());
+        assertEquals(Bitboard.EMPTY, move.getCastleRookMove());
         assertEquals(true, move.isCapture());
         assertEquals(true, move.isPromotion());
         assertEquals(false, move.isEnPassant());
@@ -92,16 +92,16 @@ class MoveTest {
 
     @Test
     void pawnPromotion() {
-        final Move move = Move.pawnPromotion(BitBoard.POSITION[15], BitBoard.POSITION[7], Piece.PAWN, Piece.KNIGHT);
+        final Move move = Move.pawnPromotion(Bitboard.INDEX[15], Bitboard.INDEX[7], Piece.PAWN, Piece.KNIGHT);
 
-        assertEquals(BitBoard.POSITION[15], move.getFrom());
-        assertEquals(BitBoard.POSITION[7], move.getTo());
+        assertEquals(Bitboard.INDEX[15], move.getFrom());
+        assertEquals(Bitboard.INDEX[7], move.getTo());
         assertEquals(Piece.BLACK | Piece.PAWN, move.getMovingPiece());
         assertEquals(Piece.EMPTY, move.getCapturedPiece());
         assertEquals(Piece.BLACK | Piece.KNIGHT, move.getPromotedToPiece());
-        assertEquals(BitBoard.EMPTY, move.getCapturedEnPassantPawn());
-        assertEquals(BitBoard.EMPTY, move.getEnPassantTarget());
-        assertEquals(BitBoard.EMPTY, move.getCastleRookMove());
+        assertEquals(Bitboard.EMPTY, move.getCapturedEnPassantPawn());
+        assertEquals(Bitboard.EMPTY, move.getEnPassantTarget());
+        assertEquals(Bitboard.EMPTY, move.getCastleRookMove());
         assertEquals(false, move.isCapture());
         assertEquals(true, move.isPromotion());
         assertEquals(false, move.isEnPassant());
@@ -113,16 +113,16 @@ class MoveTest {
 
     @Test
     void basicCapture() {
-        final Move move = Move.basicCapture(BitBoard.POSITION[42], BitBoard.POSITION[32], Piece.QUEEN, Piece.WHITE | Piece.BISHOP);
+        final Move move = Move.basicCapture(Bitboard.INDEX[42], Bitboard.INDEX[32], Piece.QUEEN, Piece.WHITE | Piece.BISHOP);
 
-        assertEquals(BitBoard.POSITION[42], move.getFrom());
-        assertEquals(BitBoard.POSITION[32], move.getTo());
+        assertEquals(Bitboard.INDEX[42], move.getFrom());
+        assertEquals(Bitboard.INDEX[32], move.getTo());
         assertEquals(Piece.BLACK | Piece.QUEEN, move.getMovingPiece());
         assertEquals(Piece.WHITE | Piece.BISHOP, move.getCapturedPiece());
         assertEquals(Piece.EMPTY, move.getPromotedToPiece());
-        assertEquals(BitBoard.EMPTY, move.getCapturedEnPassantPawn());
-        assertEquals(BitBoard.EMPTY, move.getEnPassantTarget());
-        assertEquals(BitBoard.EMPTY, move.getCastleRookMove());
+        assertEquals(Bitboard.EMPTY, move.getCapturedEnPassantPawn());
+        assertEquals(Bitboard.EMPTY, move.getEnPassantTarget());
+        assertEquals(Bitboard.EMPTY, move.getCastleRookMove());
         assertEquals(true, move.isCapture());
         assertEquals(false, move.isPromotion());
         assertEquals(false, move.isEnPassant());
@@ -134,16 +134,16 @@ class MoveTest {
 
     @Test
     void basicMove() {
-        final Move move = Move.basicMove(BitBoard.POSITION[57], BitBoard.POSITION[12], Piece.QUEEN);
+        final Move move = Move.basicMove(Bitboard.INDEX[57], Bitboard.INDEX[12], Piece.QUEEN);
 
-        assertEquals(BitBoard.POSITION[57], move.getFrom());
-        assertEquals(BitBoard.POSITION[12], move.getTo());
+        assertEquals(Bitboard.INDEX[57], move.getFrom());
+        assertEquals(Bitboard.INDEX[12], move.getTo());
         assertEquals(Piece.BLACK | Piece.QUEEN, move.getMovingPiece());
         assertEquals(Piece.EMPTY, move.getCapturedPiece());
         assertEquals(Piece.EMPTY, move.getPromotedToPiece());
-        assertEquals(BitBoard.EMPTY, move.getCapturedEnPassantPawn());
-        assertEquals(BitBoard.EMPTY, move.getEnPassantTarget());
-        assertEquals(BitBoard.EMPTY, move.getCastleRookMove());
+        assertEquals(Bitboard.EMPTY, move.getCapturedEnPassantPawn());
+        assertEquals(Bitboard.EMPTY, move.getEnPassantTarget());
+        assertEquals(Bitboard.EMPTY, move.getCastleRookMove());
         assertEquals(false, move.isCapture());
         assertEquals(false, move.isPromotion());
         assertEquals(false, move.isEnPassant());
@@ -155,17 +155,17 @@ class MoveTest {
 
     @Test
     void testEquals() {
-        final Move move = Move.castle(BitBoard.POSITION[4], BitBoard.POSITION[6], Piece.WHITE | Piece.KING, BitBoard.POSITION[5] | BitBoard.POSITION[7]);
+        final Move move = Move.castle(Bitboard.INDEX[4], Bitboard.INDEX[6], Piece.WHITE | Piece.KING, Bitboard.INDEX[5] | Bitboard.INDEX[7]);
         assertEquals(false, move.equals(null));
         assertEquals(false, move.equals(Long.valueOf(2)));
-        assertEquals(false, move.equals(Move.castle(BitBoard.POSITION[3], BitBoard.POSITION[6], Piece.WHITE | Piece.KING, BitBoard.POSITION[5] | BitBoard.POSITION[7])));
-        assertEquals(true, move.equals(Move.castle(BitBoard.POSITION[4], BitBoard.POSITION[6], Piece.WHITE | Piece.KING, BitBoard.POSITION[5] | BitBoard.POSITION[7])));
+        assertEquals(false, move.equals(Move.castle(Bitboard.INDEX[3], Bitboard.INDEX[6], Piece.WHITE | Piece.KING, Bitboard.INDEX[5] | Bitboard.INDEX[7])));
+        assertEquals(true, move.equals(Move.castle(Bitboard.INDEX[4], Bitboard.INDEX[6], Piece.WHITE | Piece.KING, Bitboard.INDEX[5] | Bitboard.INDEX[7])));
     }
 
     @Test
     void toString_test() {
-        assertEquals("a1h8", Move.basicMove(BitBoard.POSITION[0], BitBoard.POSITION[63], Piece.WHITE | Piece.PAWN).toString());
-        assertEquals("a1h8Q", Move.pawnPromotion(BitBoard.POSITION[0], BitBoard.POSITION[63], Piece.WHITE | Piece.PAWN, Piece.WHITE | Piece.QUEEN).toString());
+        assertEquals("a1h8", Move.basicMove(Bitboard.INDEX[0], Bitboard.INDEX[63], Piece.WHITE | Piece.PAWN).toString());
+        assertEquals("a1h8Q", Move.pawnPromotion(Bitboard.INDEX[0], Bitboard.INDEX[63], Piece.WHITE | Piece.PAWN, Piece.WHITE | Piece.QUEEN).toString());
     }
 
 }

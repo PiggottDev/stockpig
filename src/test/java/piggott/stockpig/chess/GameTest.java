@@ -12,70 +12,70 @@ class GameTest {
     @Test
     void standard() {
         final Game game = Game.standard();
-        assertEquals("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", game.toFen());
+        assertEquals("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", Fen.fromGame(game));
         assertFalse(game.isGameOver());
         assertFalse(game.isCheckMate());
         assertEquals(0, game.getWinner());
         assertFalse(game.isCheck());
         assertTrue(game.isWhiteTurn());
         assertEquals(20, game.getPossibleMoves().size());
-        assertEquals("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR", game.getBoard().toFen());
+        assertEquals("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR", Fen.fromBoard(game.getBoard()));
         assertEquals(1, game.getTurnNumber());
         assertEquals(0, game.getTurnsSincePushOrCapture());
         assertEquals(0b1111, game.getCastlesPossible());
-        assertEquals(BitBoard.EMPTY, game.getEnPassantTarget());
-        assertEquals(BitBoard.RANKS[5] | BitBoard.RANKS[6] | BitBoard.RANKS[7] ^ (BitBoard.POSITION[63] | BitBoard.POSITION[56]), game.getThreatenedSquares());
-        assertEquals(BitBoard.ALL ^ (BitBoard.RANKS[0] | BitBoard.RANKS[1]), game.getMovableSquares());
-        assertEquals(BitBoard.EMPTY, game.getPinSquares());
+        assertEquals(Bitboard.EMPTY, game.getEnPassantTarget());
+        assertEquals(Bitboard.RANKS[5] | Bitboard.RANKS[6] | Bitboard.RANKS[7] ^ (Bitboard.INDEX[63] | Bitboard.INDEX[56]), game.getThreatenedSquares());
+        assertEquals(Bitboard.ALL ^ (Bitboard.RANKS[0] | Bitboard.RANKS[1]), game.getMovableSquares());
+        assertEquals(Bitboard.EMPTY, game.getPinSquares());
     }
 
     @Test
     void isGameOver() {
-        assertTrue(Game.fromFen("k5qr/8/8/8/8/8/8/7K w k - 0 1").isGameOver());
-        assertTrue(Game.fromFen("k7/8/8/8/8/8/8/QR5K b - - 0 1").isGameOver());
-        assertTrue(Game.fromFen("k5r1/8/8/8/8/8/r7/7K w - - 0 1").isGameOver());
-        assertTrue(Game.fromFen("k7/8/8/3n4/8/8/8/7K w - - 0 1").isGameOver()); //Dead
-        assertFalse(Game.fromFen("k7/8/8/3n4/8/8/8/3R3K w - - 0 1").isGameOver());
+        assertTrue(Fen.toGame("k5qr/8/8/8/8/8/8/7K w k - 0 1").isGameOver());
+        assertTrue(Fen.toGame("k7/8/8/8/8/8/8/QR5K b - - 0 1").isGameOver());
+        assertTrue(Fen.toGame("k5r1/8/8/8/8/8/r7/7K w - - 0 1").isGameOver());
+        assertTrue(Fen.toGame("k7/8/8/3n4/8/8/8/7K w - - 0 1").isGameOver()); //Dead
+        assertFalse(Fen.toGame("k7/8/8/3n4/8/8/8/3R3K w - - 0 1").isGameOver());
     }
 
     @Test
     void isCheckMate() {
-        assertTrue(Game.fromFen("k5qr/8/8/8/8/8/8/7K w k - 0 1").isCheckMate());
-        assertTrue(Game.fromFen("k7/8/8/8/8/8/8/QR5K b - - 0 1").isCheckMate());
-        assertFalse(Game.fromFen("k6r/8/8/8/8/8/8/7K w k - 0 1").isCheckMate());
-        assertFalse(Game.fromFen("k5r1/8/8/8/8/8/r7/7K w - - 0 1").isCheckMate());
+        assertTrue(Fen.toGame("k5qr/8/8/8/8/8/8/7K w k - 0 1").isCheckMate());
+        assertTrue(Fen.toGame("k7/8/8/8/8/8/8/QR5K b - - 0 1").isCheckMate());
+        assertFalse(Fen.toGame("k6r/8/8/8/8/8/8/7K w k - 0 1").isCheckMate());
+        assertFalse(Fen.toGame("k5r1/8/8/8/8/8/r7/7K w - - 0 1").isCheckMate());
     }
 
     @Test
     void getWinner() {
-        assertEquals(-1, Game.fromFen("k5qr/8/8/8/8/8/8/7K w k - 0 1").getWinner());
-        assertEquals(1, Game.fromFen("k7/8/8/8/8/8/8/QR5K b - - 0 1").getWinner());
-        assertEquals(0, Game.fromFen("k5r1/8/8/8/8/8/r7/7K w - - 0 1").getWinner());
-        assertEquals(0, Game.fromFen("k7/8/8/8/8/8/8/7K w - - 0 1").getWinner());
-        assertEquals(0, Game.fromFen("k1r5/8/8/8/8/8/8/3R3K w - - 0 1").getWinner());
+        assertEquals(-1, Fen.toGame("k5qr/8/8/8/8/8/8/7K w k - 0 1").getWinner());
+        assertEquals(1, Fen.toGame("k7/8/8/8/8/8/8/QR5K b - - 0 1").getWinner());
+        assertEquals(0, Fen.toGame("k5r1/8/8/8/8/8/r7/7K w - - 0 1").getWinner());
+        assertEquals(0, Fen.toGame("k7/8/8/8/8/8/8/7K w - - 0 1").getWinner());
+        assertEquals(0, Fen.toGame("k1r5/8/8/8/8/8/8/3R3K w - - 0 1").getWinner());
     }
 
     @Test
     void applyAndUndoMove() {
         final Game game = Game.standard();
-        assertEquals("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", game.toFen());
-        game.applyMove(Move.doublePush(AlgebraNotation.toBit("e2"), AlgebraNotation.toBit("e4"), Piece.WHITE | Piece.PAWN, AlgebraNotation.toBit("e3")));
-        assertEquals("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1", game.toFen());
-        game.applyMove(Move.doublePush(AlgebraNotation.toBit("c7"), AlgebraNotation.toBit("c5"), Piece.BLACK | Piece.PAWN, AlgebraNotation.toBit("c6")));
-        assertEquals("rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2", game.toFen());
-        game.applyMove(Move.basicMove(BitBoard.POSITION[6], AlgebraNotation.toBit("f3"), Piece.KNIGHT | Piece.WHITE));
-        assertEquals("rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2", game.toFen());
+        assertEquals("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", Fen.fromGame(game));
+        game.applyMove(Move.doublePush(AlgebraNotation.toBitboard("e2"), AlgebraNotation.toBitboard("e4"), Piece.WHITE | Piece.PAWN, AlgebraNotation.toBitboard("e3")));
+        assertEquals("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1", Fen.fromGame(game));
+        game.applyMove(Move.doublePush(AlgebraNotation.toBitboard("c7"), AlgebraNotation.toBitboard("c5"), Piece.BLACK | Piece.PAWN, AlgebraNotation.toBitboard("c6")));
+        assertEquals("rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2", Fen.fromGame(game));
+        game.applyMove(Move.basicMove(Bitboard.INDEX[6], AlgebraNotation.toBitboard("f3"), Piece.KNIGHT | Piece.WHITE));
+        assertEquals("rnbqkbnr/pp1ppppp/8/2p5/4P3/5N2/PPPP1PPP/RNBQKB1R b KQkq - 1 2", Fen.fromGame(game));
         game.undoLastMove();
-        assertEquals("rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2", game.toFen());
+        assertEquals("rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq c6 0 2", Fen.fromGame(game));
         game.undoLastMove();
-        assertEquals("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1", game.toFen());
+        assertEquals("rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq e3 0 1", Fen.fromGame(game));
         game.undoLastMove();
-        assertEquals("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", game.toFen());
+        assertEquals("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1", Fen.fromGame(game));
     }
 
     @Test
     void testToString() {
-        final Game game = Game.fromFen("k5qr/8/8/8/8/8/8/7K w k - 0 1");
+        final Game game = Fen.toGame("k5qr/8/8/8/8/8/8/7K w k - 0 1");
         assertEquals("+---+---+---+---+---+---+---+---+\n" +
                 "|   |   |   |   |   |   |   |   |\n" +
                 "| k |   |   |   |   |   | q | r |\n" +

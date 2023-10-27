@@ -25,7 +25,7 @@ public class Stockpig {
 
         while(!exit) {
 
-            System.out.println(game.toString());
+            System.out.println(game.debugString());
             System.out.println("=>");
 
             final String input = in.nextLine();
@@ -37,7 +37,7 @@ public class Stockpig {
                     break;
                 case FEN:
                     try {
-                        game = Game.fromFen(input.substring(4));
+                        game = Fen.toGame(input.substring(4));
                     } catch (Exception ex) {
                         System.out.println("Invalid Fen");
                     }

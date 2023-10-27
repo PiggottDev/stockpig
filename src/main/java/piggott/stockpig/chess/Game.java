@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Class representing a game of chess
- * Also stores history so moves can be undone
+ * Class representing a game of chess implemented using bitboards.
+ * Also stores history so moves can be undone.
+ *
+ * @see Bitboard
  */
 public class Game {
 
@@ -22,18 +24,18 @@ public class Game {
     private final List<Integer> previousTurnSincePushOrCapture = new ArrayList<>();
 
     private List<Move> possibleMoves;
-    private BoardAnalyser boardAnalyser;
+    private MoveGenerator moveGenerator;
 
     /**
-     * Game with standard chess set up
+     * Game with standard chess set up.
      *
-     * @return Standard chess game
+     * @return standard chess game
      */
     public static Game standard() {
-        return new Game(Board.standard(), true, Castling.ALL_ALLOWED, BitBoard.EMPTY, 0, 1);
+        return new Game(Board.standard(), true, Castling.ALL_ALLOWED, Bitboard.EMPTY, 0, 1);
     }
 
-    private Game(final Board board, final boolean isWhiteTurn, final int castlesPossible, final long enPassantTarget, final int turnsSincePushOrCapture, final int turnNumber) {
+    Game(final Board board, final boolean isWhiteTurn, final int castlesPossible, final long enPassantTarget, final int turnsSincePushOrCapture, final int turnNumber) {
         this.board = board;
         this.isWhiteTurn = isWhiteTurn;
         this.castlesPossible = castlesPossible;
@@ -43,37 +45,43 @@ public class Game {
         analyseBoard();
     }
 
-    //  ---------------------------------------------- Getters And Debug ----------------------------------------------
+    // -- Getters --
 
     /**
      * Is the game over for any reason:
-     * - Check mate
-     * - Stale mate
-     * - Dead position
-     * - 50 move rule
+     * <ul>
+     *     <li>Checkmate</li>
+     *     <li>Stalemate</li>
+     *     <li>Dead position</li>
+     *     <li>50 move rule</li>
+     * </ul>
      *
-     * @return Whether the game is over
+     * @return whether the game is over
      */
     public boolean isGameOver() {
         return possibleMoves.size() == 0;
     }
 
     /**
-     * If the current moving player is in check mate
+     * If the current moving player is in checkmate.
      *
-     * @return Is moving player in check mate
+     * @return is moving player in checkmate
      */
     public boolean isCheckMate() {
         return (possibleMoves.size() == 0 && isCheck());
     }
 
     /**
-     * Return -1/0/1 showing who has won/draw
-     * -1: Black has won
-     * 0: Draw
-     * 1: White has won
+     * Return value representing who has won or if it's a draw.
+     * Should be used in conjunction with {@link #isGameOver()} to avoid
+     * active games being marked as a stalemate.
+     * <ol>
+     *     <li>-1 = Black has won</li>
+     *     <li>0 = Draw or game is not over</li>
+     *     <li>1 = White has won</li></>
+     * </ol>
      *
-     * @return Winner
+     * @return winner value
      */
     public int getWinner() {
         if (!isGameOver()) return 0; // Game isn't over
@@ -82,113 +90,119 @@ public class Game {
     }
 
     /**
-     * Get whether the current moving player is in check
+     * Get whether the current moving player is in check.
      *
-     * @return Is moving player in check
+     * @return is moving player in check
      */
     public boolean isCheck() {
-        return boardAnalyser.isCheck();
+        return moveGenerator.isCheck();
     }
 
     /**
-     * Whether it is currently white's turn to move
+     * Whether it is currently white's turn to move.
      *
-     * @return Is white's turn to move
+     * @return is white's turn to move
      */
     public boolean isWhiteTurn() {
         return isWhiteTurn;
     }
 
     /**
-     * Get list of legal moves
+     * Get list of legal moves.
      *
-     * @return List of legal moves
+     * @return legal moves
      */
     public List<Move> getPossibleMoves() {
         return possibleMoves;
     }
 
     /**
-     * Get the board object
+     * Get the board object.
      *
-     * @return Chess board
+     * @return board
      */
     public Board getBoard() {
         return board;
     }
 
     /**
-     * Current turn number
+     * Current turn number.
      *
-     * @return Turn number
+     * @return turn number
      */
     public int getTurnNumber() {
         return turnNumber;
     }
 
     /**
-     * Turns since pawn push or a capture
+     * Turns since pawn push or a capture.
      *
-     * @return Turns since push/capture
+     * @return turns since push/capture
      */
     public int getTurnsSincePushOrCapture() {
         return turnsSincePushOrCapture;
     }
 
     /**
-     * Get the bitmap of the current castles allowed
+     * Get the bitmap of the current castles allowed.
      *
-     * @return Bitmap of castles allowed
+     * @return bitmap of castles allowed
+     * @see Castling
      */
     public int getCastlesPossible() {
         return castlesPossible;
     }
 
     /**
-     * Get the current target square of an en passant
-     * Only present directly after a double pawn push move
+     * Get the current target square of an en passant.
+     * Only present directly after a double pawn push move.
      *
-     * @return En passant target bitboard
+     * @return en passant target bitboard
      */
     public long getEnPassantTarget() {
         return enPassantTarget;
     }
 
     /**
-     * Get bitboard of squares currently threatened by the non-moving player
+     * Get bitboard of squares currently threatened by the non-moving player.
      *
-     * @return Threat bitboard
+     * @return threat bitboard
      */
     public long getThreatenedSquares() {
-        return boardAnalyser.getThreatened();
+        return moveGenerator.getThreatened();
     }
 
     /**
-     * Get the squares in which the moving team is allowed to move
+     * Get the squares in which the moving team is allowed to move.
      * When NOT in check:
      * - All squares not occupied by an allied piece
      * When in check:
      * - Squares that can be moved/captured to block check
      *
-     * @return Movable squares for the current moving player
+     * @return movable squares for the current moving player
      */
     public long getMovableSquares() {
-        return boardAnalyser.getMovableSquares();
+        return moveGenerator.getMovableSquares();
     }
 
     /**
-     * Get a bitboard of 'pin rays'
-     * A 'pin ray' starts at the enemy piece's square and ends at the king (excluding the king square)
-     * Contains exactly one allied piece (the pinned piece)
+     * Get a bitboard of 'pin rays'.
+     * A 'pin ray' starts at the enemy piece's square and ends at the king (excluding the king square).
+     * Contains exactly one allied piece (the pinned piece), per ray.
      *
-     * @return Bitboard of pin rays
+     * @return bitboard of pin rays
      */
     public long getPinSquares() {
-        return boardAnalyser.getAllPin();
+        return moveGenerator.getAllPin();
     }
 
-    //  ---------------------------------------------- Moves ----------------------------------------------
+    // -- Move --
 
+    /**
+     * Apply a move to the game.
+     *
+     * @param move move
+     */
     public void applyMove(final Move move) {
         // Save previous state
         previousMoves.add(move);
@@ -208,11 +222,21 @@ public class Game {
         analyseBoard();
     }
 
+    /**
+     * Undo last move.
+     */
     public void undoLastMove() {
         undoLastMove(true);
     }
 
-    public void undoLastMove(final boolean regenMoves) {
+    /**
+     * Undo last move.
+     * Can opt out of board analysis/move generation to save time if the list of moves is
+     * stored elsewhere - useful in a depth/perft test.
+     *
+     * @param regenMoves whether to generate moves after undo
+     */
+    void undoLastMove(final boolean regenMoves) {
         final int moveNumber = previousMoves.size() - 1;
         if (moveNumber < 0) return;
 
@@ -235,46 +259,31 @@ public class Game {
     }
 
     private void analyseBoard() {
-        boardAnalyser = new BoardAnalyser(board, isWhiteTurn, castlesPossible, enPassantTarget);
-        if (turnsSincePushOrCapture > 49 || Board.isDeadPosition(board)) {
+        moveGenerator = new MoveGenerator(board, isWhiteTurn, castlesPossible, enPassantTarget);
+        if (turnsSincePushOrCapture > 49 || board.isDeadPosition()) {
             possibleMoves = new ArrayList<>();
         } else {
-            possibleMoves = boardAnalyser.generateLegalMoves();
+            possibleMoves = moveGenerator.generateLegalMoves();
         }
     }
 
-    //  ---------------------------------------------- Fen and String ----------------------------------------------
+    // -- Debug String --
 
-    public String toFen() {
-        String fen = board.toFen();
-        fen = fen + (isWhiteTurn ? " w " : " b ");
-        fen = fen + Castling.toString(castlesPossible);
-        fen = fen + " " + AlgebraNotation.fromBit(enPassantTarget);
-        fen = fen + " " + turnsSincePushOrCapture + " " + turnNumber;
-        return fen;
-    }
-
-    public static Game fromFen(final String fen) {
-        final String[] fenParts = fen.split(" ");
-        return new Game(Board.fromFen(fenParts[0]), "w".equals(fenParts[1]), Castling.fromString(fenParts[2]), AlgebraNotation.toBit(fenParts[3]), Integer.parseInt(fenParts[4]), Integer.parseInt(fenParts[5]));
-    }
-
-    @Override
-    public String toString() {
-        String str = board.toString();
+    public String debugString() {
+        String str = board.debugString();
 
         if (isGameOver()) str = str + "\n\tWinner: " + getWinner();
         if (isCheck()) str = str + "\n\tCheck";
         str = str + (isWhiteTurn ? "\n\tWhite Turn" : "\n\tBlack Turn");
         str = str + "\n\t\tCastles: " + Castling.toString(castlesPossible);
-        str = str + "\n\t\tEnPassant Target: " + AlgebraNotation.fromBit(enPassantTarget);
+        str = str + "\n\t\tEnPassant Target: " + AlgebraNotation.fromBitboard(enPassantTarget);
         str = str + "\n\t\tTurns Since Push/Cap: " + turnsSincePushOrCapture;
         str = str + "\n\t\tTurn Number: "+ turnNumber;
 
         return str;
     }
 
-    //  ---------------------------------------------- Depth Test ----------------------------------------------
+    // -- Depth Test -- TODO: Move to separate class
 
     public long movePathEnumerationPerft(final int depth) {
         if (depth < 1) return 1;

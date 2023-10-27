@@ -1,16 +1,16 @@
 package piggott.stockpig.chess;
 
 /**
- * Chess pieces are represented with a single int bitmap
- * This class has static methods to extract data from the int
- *
- * The 3 least significant bits are used as a bitmap to show the type of piece
- * The 4th least significant bit represents the team of the piece
- *
- * If the piece bits are empty then the int represents the whole team
- *
- * As there are 6 chess pieces we reserve int 7 to represent 'Unoccupied' squares
- *
+ * Chess pieces are represented with a single int bitmap.
+ * This class has static methods to extract data from the int.
+ * <p>
+ * The 3 least significant bits are used as a bitmap to show the type of piece.
+ * The 4th least significant bit represents the team of the piece.
+ * <p>
+ * If the piece bits are empty then the int represents the whole team.
+ * <p>
+ * As there are 6 chess pieces we reserve int 7 to represent 'Unoccupied' squares.
+ * <p>
  * 0 (0000) Black Team
  * 1 (0001) Black King
  * 2 (0010) Black Pawn
@@ -26,11 +26,10 @@ package piggott.stockpig.chess;
  * 12 (1100) White Bishop
  * 13 (1101) White Rook
  * 14 (1110) White Queen
- *
  */
 public class Piece {
 
-    // The 3 least significant bits can be used to determine the type of chess piece
+    // The 3 least significant bits store piece type
     private static final int TYPE_BITMASK = 0b00000111;
     public static final int EMPTY = 0;
     public static final int KING = 1;
@@ -40,13 +39,13 @@ public class Piece {
     public static final int ROOK = 5;
     public static final int QUEEN = 6;
 
-    // The 4th least significant bit can be used to determine the team of the chess piece
+    // The 4th least significant bit stores team
     private static final int TEAM_BITMASK = 0b00001000;
     public static final int BLACK = 0;
     public static final int WHITE = 8;
     public static final int UNOCCUPIED = 7;
 
-    // Characters representing chess pieces in a string
+    // Characters of chess pieces
     private static final char K = 'K';
     private static final char P = 'P';
     private static final char N = 'N';
@@ -107,23 +106,23 @@ public class Piece {
     }
 
     public static int getForwardDirection(final boolean isWhite) {
-        return isWhite ? BitBoard.NORTH : BitBoard.SOUTH;
+        return isWhite ? Bitboard.NORTH : Bitboard.SOUTH;
     }
 
     public static int getBackwardDirection(final boolean isWhite) {
-        return isWhite ? BitBoard.SOUTH : BitBoard.NORTH;
+        return isWhite ? Bitboard.SOUTH : Bitboard.NORTH;
     }
 
     public static long getPawnStartingRank(final boolean isWhite) {
-        return isWhite ? BitBoard.RANKS[1] : BitBoard.RANKS[6];
+        return isWhite ? Bitboard.RANKS[1] : Bitboard.RANKS[6];
     }
 
     public static long getPawnPromotionRank(final boolean isWhite) {
-        return isWhite ? BitBoard.RANKS[7] : BitBoard.RANKS[0];
+        return isWhite ? Bitboard.RANKS[7] : Bitboard.RANKS[0];
     }
 
     public static int[] getPawnAttackingDirections(final boolean isWhite) {
-        return isWhite ? BitBoard.WHITE_PAWN_ATTACK_DIRECTIONS : BitBoard.BLACK_PAWN_ATTACK_DIRECTIONS;
+        return isWhite ? Bitboard.WHITE_PAWN_ATTACK_DIRECTIONS : Bitboard.BLACK_PAWN_ATTACK_DIRECTIONS;
     }
 
     public static int fromChar(final char c) {

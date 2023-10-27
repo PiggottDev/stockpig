@@ -11,7 +11,7 @@ class AlgebraNotationTest {
     @Test
     void toBit() {
 
-        assertEquals(0L, AlgebraNotation.toBit("-"));
+        assertEquals(0L, AlgebraNotation.toBitboard("-"));
 
         int position = 0;
 
@@ -21,7 +21,7 @@ class AlgebraNotationTest {
 
                 final String algebra = file + "" + rank; // ... construct the algebra notation...
 
-                assertEquals(BitBoard.POSITION[position], AlgebraNotation.toBit(algebra)); // ... and check it's the same as BitBoard
+                assertEquals(Bitboard.INDEX[position], AlgebraNotation.toBitboard(algebra)); // ... and check it's the same as BitBoard
 
                 position++;
             }
@@ -31,7 +31,7 @@ class AlgebraNotationTest {
     @Test
     void fromBit() {
 
-        assertEquals("-", AlgebraNotation.fromBit(0L));
+        assertEquals("-", AlgebraNotation.fromBitboard(0L));
 
         int position = 0;
 
@@ -41,7 +41,7 @@ class AlgebraNotationTest {
 
                 final String algebra = file + "" + rank; // ... construct the algebra notation...
 
-                assertEquals(algebra, AlgebraNotation.fromBit(BitBoard.POSITION[position]));
+                assertEquals(algebra, AlgebraNotation.fromBitboard(Bitboard.INDEX[position]));
 
                 position++;
             }

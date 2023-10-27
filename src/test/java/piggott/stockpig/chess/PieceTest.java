@@ -283,32 +283,32 @@ class PieceTest {
 
     @Test
     void getForwardDirection() {
-        assertEquals(BitBoard.NORTH, Piece.getForwardDirection(true));
-        assertEquals(BitBoard.SOUTH, Piece.getForwardDirection(false));
+        assertEquals(Bitboard.NORTH, Piece.getForwardDirection(true));
+        assertEquals(Bitboard.SOUTH, Piece.getForwardDirection(false));
     }
 
     @Test
     void getBackwardDirection() {
-        assertEquals(BitBoard.SOUTH, Piece.getBackwardDirection(true));
-        assertEquals(BitBoard.NORTH, Piece.getBackwardDirection(false));
+        assertEquals(Bitboard.SOUTH, Piece.getBackwardDirection(true));
+        assertEquals(Bitboard.NORTH, Piece.getBackwardDirection(false));
     }
 
     @Test
     void getPawnStartingRank() {
-        assertEquals(BitBoard.RANKS[1], Piece.getPawnStartingRank(true));
-        assertEquals(BitBoard.RANKS[6], Piece.getPawnStartingRank(false));
+        assertEquals(Bitboard.RANKS[1], Piece.getPawnStartingRank(true));
+        assertEquals(Bitboard.RANKS[6], Piece.getPawnStartingRank(false));
     }
 
     @Test
     void getPawnPromotionRank() {
-        assertEquals(BitBoard.RANKS[7], Piece.getPawnPromotionRank(true));
-        assertEquals(BitBoard.RANKS[0], Piece.getPawnPromotionRank(false));
+        assertEquals(Bitboard.RANKS[7], Piece.getPawnPromotionRank(true));
+        assertEquals(Bitboard.RANKS[0], Piece.getPawnPromotionRank(false));
     }
 
     @Test
     void getPawnAttackingDirections() {
-        assertEquals(BitBoard.WHITE_PAWN_ATTACK_DIRECTIONS, Piece.getPawnAttackingDirections(true));
-        assertEquals(BitBoard.BLACK_PAWN_ATTACK_DIRECTIONS, Piece.getPawnAttackingDirections(false));
+        assertEquals(Bitboard.WHITE_PAWN_ATTACK_DIRECTIONS, Piece.getPawnAttackingDirections(true));
+        assertEquals(Bitboard.BLACK_PAWN_ATTACK_DIRECTIONS, Piece.getPawnAttackingDirections(false));
     }
 
     @Test

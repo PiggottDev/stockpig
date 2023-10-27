@@ -1,29 +1,28 @@
 package piggott.stockpig.chess;
 
 /**
- * A bit board is a bit array data structure in the form of a single long.
+ * A bitboard is a bitmap data structure in the form of a single long.
  * Each bit in the long represents the presence/absence on a given chess square.
- * We can use a combination of these to represent the whole state of a chess board.
- *
+ * We can use several of these to represent the whole state of a chess board.
+ * <p>
  * The 64 bits are set out in an 8x8 square.
  * The least significant bit is indexed 0 and the most significant bit indexed 63:
- *
  * .....63
  * .......
  * .......
  * 0 ... 7
- *
  */
-public class BitBoard {
+public class Bitboard {
 
+    // Bitboard constants
     public static final long EMPTY = 0L;
     public static final long ALL = 0xFFFFFFFFFFFFFFFFL;
-
     public static final long[] RANKS = initRanks();
     public static final long[] FILES = initFiles();
     public static final long BLACK_SQUARES = initBlackSquares();
-    public static final long[] POSITION = initPositions();
+    public static final long[] INDEX = initPositions();
 
+    // Direction indexes
     public static final int NORTH = 0;
     public static final int NORTH_EAST = 1;
     public static final int EAST = 2;
@@ -41,6 +40,7 @@ public class BitBoard {
     public static final int NORTH_WEST_WEST = 14;
     public static final int NORTH_NORTH_WEST = 15;
 
+    // Direction index groups
     public static final int[] CARDINAL = {NORTH, SOUTH, EAST, WEST};
     public static final int[] HORIZONTAL = {EAST, WEST};
     public static final int[] VERTICAL = {NORTH, SOUTH};
@@ -52,6 +52,7 @@ public class BitBoard {
     public static final int[] WHITE_PAWN_ATTACK_DIRECTIONS = {NORTH_EAST, NORTH_WEST};
     public static final int[] BLACK_PAWN_ATTACK_DIRECTIONS = {SOUTH_WEST, SOUTH_EAST};
 
+    // Constants for directions, index of the array being the direction index above
     private static final int[] DIRECTIONS = new int[] {8, 9, 1, -7, -8, -9, -1, 7, 17, 10, -6, -15, -17, -10, 6, 15};
     private static final long[] BOUNDS = initBounds();
     private static final long[] INVERSE_BOUNDS = initInverseBounds();
@@ -59,34 +60,35 @@ public class BitBoard {
     private static final long[] FILL_AREAS = initFillAreas();
 
     /**
-     * Check to see if two bit boards have at least one common space
+     * Check to see if two bitboards have at least one common space.
      * 
-     * @param bitBoard1
-     * @param bitBoard2
-     * @return whether the two bit boards have at least one common bit
+     * @param bitboard1 bitboard
+     * @param bitboard2 bitboard
+     * @return whether the bitboards intersect
      */
-    public static boolean intersects(final long bitBoard1, final long bitBoard2) {
-        return ((bitBoard1 & bitBoard2) != 0);
+    public static boolean intersects(final long bitboard1, final long bitboard2) {
+        return ((bitboard1 & bitboard2) != 0);
     }
 
     /**
-     * Check to see if an area fully contains all given bits
+     * Check to see if an area fully contains a bitboard.
+     * Could also be named 'isSubset'.
      *
-     * @param area area
-     * @param bits the bits to check if are contained in the area
-     * @return whether the area fully contains the given bits
+     * @param area area bitboard
+     * @param bits a bitboard to check if contained in the area
+     * @return whether the area fully contains the given bitboard
      */
     public static boolean contains(final long area, final long bits) {
         return (area & bits) == bits;
     }
 
     /**
-     * Perform fill algorithm in given direction within given area
+     * Perform fill algorithm in given direction within given area.
      *
-     * @param bits bits to fill
+     * @param bits bitboard to fill
      * @param direction direction to fill
      * @param area area that is allowed to be filled
-     * @return filled area
+     * @return filled bitboard
      */
     public static long fill(long bits, final int direction, long area) {
 
@@ -104,93 +106,92 @@ public class BitBoard {
     }
 
     /**
-     * Bit shift by the opposite of a bit board direction constant
+     * Bit shift by a bitboard direction constant.
      *
-     * @param bit bits to shift
-     * @param direction index of a direction opposite shift, see {@link BitBoard#NORTH}
-     * @return shifted bits
+     * @param bitboard bitboard
+     * @param direction direction index
+     * @return shifted bitboard
      */
-    public static long oppositeDirectionalShift(final long bit, final int direction) {
-        return shift(bit, -DIRECTIONS[direction]);
+    public static long directionalShift(final long bitboard, final int direction) {
+        return shift(bitboard, DIRECTIONS[direction]);
     }
 
     /**
-     * Bit shift in a direction
-     * Then AND the result with a given bitboard
+     * Bit shift by the opposite of a bitboard direction constant.
      *
-     * @param bit bits to shift
-     * @param direction index of a direction to shift by, see {@link BitBoard#NORTH}
-     * @param spaceMask mask to AND with the shifted bits
-     * @return shifted bits
+     * @param bitboard bitboard
+     * @param direction direction index
+     * @return shifted bitboard
      */
-    public static long directionalShiftWithinArea(final long bit, final int direction, final long spaceMask) {
-        return directionalShift(bit, direction) & spaceMask;
+    public static long oppositeDirectionalShift(final long bitboard, final int direction) {
+        return shift(bitboard, -DIRECTIONS[direction]);
     }
 
     /**
-     * AND the bits with a given inverse bound for the given direction
-     * Then shift the bits in that direction
-     * This prevents chess pieces wrapping around the board
-     * (e.g. bishop moving diagonally through the side of the board)
+     * Bit shift by a bitboard direction constant.
+     * Then AND the result with a given bitboard mask.
      *
-     * @param bit bits to shift
-     * @param direction index of direction to shift by, see {@link BitBoard#NORTH}
-     * @return shifted bits
+     * @param bitboard bitboard
+     * @param direction direction index
+     * @param spaceMask mask to AND with the shifted bitboard
+     * @return shifted bitboard
+     */
+    public static long directionalShiftWithinArea(final long bitboard, final int direction, final long spaceMask) {
+        return directionalShift(bitboard, direction) & spaceMask;
+    }
+
+    /**
+     * Bit shift by a bitboard direction constant.
+     * AND the bitboard with a given inverse bound for the given direction.
+     * Then shift the bitboard in that direction.
+     * This prevents chess pieces wrapping around the board.
+     * (e.g. bishop moving diagonally through the side of the board).
+     *
+     * @param bit bitboard
+     * @param direction direction index
+     * @return shifted bitboard
      */
     public static long directionalShiftBounded(final long bit, final int direction) {
         return directionalShift(bit & INVERSE_BOUNDS[direction], direction);
     }
 
     /**
-     * AND the bits with a given inverse bound for the given direction
-     * Then shift the bits in that direction
-     * AND with the given bit board
+     * Bit shift by a bitboard direction constant.
+     * AND the bitboard with a given inverse bound for the given direction.
+     * Then shift the bits in that direction.
+     * Then AND the result with a given bitboard mask.
      *
-     * See both, {@link BitBoard#directionalShiftWithinArea} and {@link BitBoard#directionalShiftBounded}
-     *
-     * @param bit bits to shift
-     * @param direction index of given direction to shift by, see {@link BitBoard#NORTH}
-     * @param spaceMask mask to AND with shifted bits
-     * @return shifted bits
+     * @param bit bitboard
+     * @param direction direction index
+     * @param spaceMask mask to AND with shifted bitboard
+     * @return shifted bitboard
      */
     public static long directionalShiftBoundedWithinArea(final long bit, final int direction, final long spaceMask) {
         return directionalShiftBounded(bit, direction) & spaceMask;
     }
 
     /**
-     * Bit shift that can be negative 
+     * Generalised bit shift, allows negatives.
      *
-     * @param bit bits to shift
+     * @param bitboard bitboard
      * @param shift amount to shift by
-     * @return shifted bits
+     * @return shifted bitboard
      */
-    private static long shift(final long bit, final int shift) {
-        if (shift < 0) return (bit >>> -shift);
-        return (bit << shift);
+    public static long shift(final long bitboard, final int shift) {
+        return shift < 0 ? bitboard >>> -shift : bitboard << shift;
     }
 
     /**
-     * Bit shift by a bit board direction constant
+     * Returns a debug string.
      *
-     * @param bit bits to shift
-     * @param direction index of a direction to shift by, see {@link BitBoard#NORTH}
-     * @return shifted bits
+     * @param bitboard bitboard
+     * @return debug string
      */
-    public static long directionalShift(final long bit, final int direction) {
-        return shift(bit, DIRECTIONS[direction]);
-    }
-
-    /**
-     * Return a string to be printed to visualise the bitboard
-     *
-     * @param bitboard the bitboard
-     * @return string to be printed
-     */
-    public static String toString(final long bitboard) {
+    public static String debugString(final long bitboard) {
         return buildBoardString(bitboard);
     }
 
-    //  ---------------------------------------------- Constant Initialisation ----------------------------------------------
+    // -- Constant Initialisation --
 
     private static long[] initRanks() {
         final long[] ranks = new long[8];
@@ -288,7 +289,7 @@ public class BitBoard {
         return fillAreas;
     }
 
-    //  ---------------------------------------------- toString ----------------------------------------------
+    // -- Debug String --
 
     private static final String LINE_ROW = "+---+---+---+---+---+---+---+---+\n";
     private static final String PADDING_ROW = "|   |   |   |   |   |   |   |   |\n";

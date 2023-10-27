@@ -1,8 +1,8 @@
 package piggott.stockpig.chess;
 
 /**
- * An int bit array is used to show whether castling is possible for each team/side
- * This class is a helper class to extract data from the bit array and to help with castling logic
+ * An int bit array is used to show whether castling is possible for each team/side.
+ * This class is a helper class to extract data from the bit array and to help with castling logic.
  */
 public class Castling {
 
@@ -26,12 +26,12 @@ public class Castling {
 
     // Pre-created moves for each castle
     private static final Move[] WHITE_MOVES = {
-            Move.castle(BitBoard.POSITION[4], BitBoard.POSITION[6], Piece.WHITE | Piece.KING, BitBoard.POSITION[5] | BitBoard.POSITION[7]),
-            Move.castle(BitBoard.POSITION[4], BitBoard.POSITION[2], Piece.WHITE | Piece.KING, BitBoard.POSITION[0] | BitBoard.POSITION[3])
+            Move.castle(Bitboard.INDEX[4], Bitboard.INDEX[6], Piece.WHITE | Piece.KING, Bitboard.INDEX[5] | Bitboard.INDEX[7]),
+            Move.castle(Bitboard.INDEX[4], Bitboard.INDEX[2], Piece.WHITE | Piece.KING, Bitboard.INDEX[0] | Bitboard.INDEX[3])
     };
     private static final Move[] BLACK_MOVES = {
-            Move.castle(BitBoard.POSITION[60], BitBoard.POSITION[62], Piece.BLACK | Piece.KING, BitBoard.POSITION[61] | BitBoard.POSITION[63]),
-            Move.castle(BitBoard.POSITION[60], BitBoard.POSITION[58], Piece.BLACK | Piece.KING, BitBoard.POSITION[56] | BitBoard.POSITION[59])
+            Move.castle(Bitboard.INDEX[60], Bitboard.INDEX[62], Piece.BLACK | Piece.KING, Bitboard.INDEX[61] | Bitboard.INDEX[63]),
+            Move.castle(Bitboard.INDEX[60], Bitboard.INDEX[58], Piece.BLACK | Piece.KING, Bitboard.INDEX[56] | Bitboard.INDEX[59])
     };
 
     private static final char BLACK_KING_SIDE = 'k';
@@ -40,14 +40,14 @@ public class Castling {
     private static final char WHITE_QUEEN_SIDE = 'Q';
 
     /**
-     * Updates the allowed castles bitmap after a given move
+     * Updates the allowed castles bitmap after a given move.
      *
      * @param currentCastlesPossible castles allowed before the move
      * @param move move performed
      * @param isWhiteTurn which team performed the move
      * @return new bitmap of allowed castles
      */
-    public static int getCastlesAllowedAfterMove(int currentCastlesPossible, final Move move, final boolean isWhiteTurn) {
+    static int getCastlesAllowedAfterMove(int currentCastlesPossible, final Move move, final boolean isWhiteTurn) {
         if (currentCastlesPossible == NONE_ALLOWED) return NONE_ALLOWED;
 
         // Check if the move affects the movers castle possibilities
@@ -74,8 +74,8 @@ public class Castling {
     }
 
     /**
-     * Get the king side castle move for the given team, only if it is possible
-     * If not possible return null
+     * Get the king side castle move for the given team, only if it is possible.
+     * If not possible return null.
      *
      * @param currentCastlesPossible bitmap of which castles are allowed
      * @param isWhiteTurn is it white's turn
@@ -83,13 +83,13 @@ public class Castling {
      * @param checkedSquares threatened/checked squares bitboard
      * @return king side castle move OR null
      */
-    public static Move getKingSideCastleIfPossible(final int currentCastlesPossible, final boolean isWhiteTurn, final long unoccupiedSquares, final long checkedSquares) {
+    static Move getKingSideCastleIfPossible(final int currentCastlesPossible, final boolean isWhiteTurn, final long unoccupiedSquares, final long checkedSquares) {
         return getCastleMoveIfPossible(KING_SIDE, currentCastlesPossible, isWhiteTurn, unoccupiedSquares, checkedSquares);
     }
 
     /**
-     * Get the queen side castle move for the given team, only if it is possible
-     * If not possible return null
+     * Get the queen side castle move for the given team, only if it is possible.
+     * If not possible return null.
      *
      * @param currentCastlesPossible bitmap of which castles are allowed
      * @param isWhiteTurn is it white's turn
@@ -97,7 +97,7 @@ public class Castling {
      * @param checkedSquares threatened/checked squares bitboard
      * @return queen side castle move OR null
      */
-    public static Move getQueenSideCastleIfPossible(final int currentCastlesPossible, final boolean isWhiteTurn, final long unoccupiedSquares, final long checkedSquares) {
+    static Move getQueenSideCastleIfPossible(final int currentCastlesPossible, final boolean isWhiteTurn, final long unoccupiedSquares, final long checkedSquares) {
         return getCastleMoveIfPossible(QUEEN_SIDE, currentCastlesPossible, isWhiteTurn, unoccupiedSquares, checkedSquares);
     }
 
@@ -105,10 +105,10 @@ public class Castling {
         if (!isAllowed(currentCastlesPossible, isWhiteTurn, side)) return null; // Castling not allowed this side
 
         final long emptySquaresRequired = get(EMPTY_SQUARES, isWhiteTurn, side);
-        if (!BitBoard.contains(unoccupiedSquares, emptySquaresRequired)) return null; // Squares required to be empty are not
+        if (!Bitboard.contains(unoccupiedSquares, emptySquaresRequired)) return null; // Squares required to be empty are not
 
         final long squaresRequiredFreeOfCheck = get(CHECK_SQUARES, isWhiteTurn, side);
-        if (BitBoard.intersects(checkedSquares, squaresRequiredFreeOfCheck)) return null; //One of the squares the king must move through is in check
+        if (Bitboard.intersects(checkedSquares, squaresRequiredFreeOfCheck)) return null; //One of the squares the king must move through is in check
 
         return isWhiteTurn ? WHITE_MOVES[side] : BLACK_MOVES[side];
     }
@@ -154,7 +154,7 @@ public class Castling {
         return str;
     }
 
-    //  ---------------------------------------------- Constant Initialisation ----------------------------------------------
+    // -- Constant Initialisation --
 
     private static long[][] initBlackCastling() {
         final long[][] castling = new long[2][3];

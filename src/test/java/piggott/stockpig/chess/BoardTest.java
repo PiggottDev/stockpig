@@ -11,47 +11,47 @@ class BoardTest {
     @Test
     void addPiece() {
         final Board board = Board.empty();
-        board.addPiece(Piece.WHITE | Piece.QUEEN, BitBoard.POSITION[4]);
-        board.addPiece(Piece.BLACK | Piece.PAWN, BitBoard.RANKS[5]);
+        board.addPiece(Piece.WHITE | Piece.QUEEN, Bitboard.INDEX[4]);
+        board.addPiece(Piece.BLACK | Piece.PAWN, Bitboard.RANKS[5]);
 
-        assertEquals(BitBoard.POSITION[4], board.getPieces(Piece.WHITE));
-        assertEquals(BitBoard.POSITION[4], board.getPieces(Piece.WHITE | Piece.QUEEN));
+        assertEquals(Bitboard.INDEX[4], board.getPieceBitboard(Piece.WHITE));
+        assertEquals(Bitboard.INDEX[4], board.getPieceBitboard(Piece.WHITE | Piece.QUEEN));
 
-        assertEquals(BitBoard.RANKS[5], board.getPieces(Piece.BLACK));
-        assertEquals(BitBoard.RANKS[5], board.getPieces(Piece.BLACK | Piece.PAWN));
+        assertEquals(Bitboard.RANKS[5], board.getPieceBitboard(Piece.BLACK));
+        assertEquals(Bitboard.RANKS[5], board.getPieceBitboard(Piece.BLACK | Piece.PAWN));
 
-        assertEquals(BitBoard.ALL ^ (BitBoard.RANKS[5] | BitBoard.POSITION[4]), board.getPieces(Piece.UNOCCUPIED));
+        assertEquals(Bitboard.ALL ^ (Bitboard.RANKS[5] | Bitboard.INDEX[4]), board.getPieceBitboard(Piece.UNOCCUPIED));
     }
 
     @Test
     void removePiece() {
         final Board board = Board.standard();
-        board.removePiece(Piece.BLACK | Piece.PAWN, BitBoard.RANKS[6]);
-        board.removePiece(Piece.WHITE | Piece.PAWN, BitBoard.RANKS[1]);
+        board.removePiece(Piece.BLACK | Piece.PAWN, Bitboard.RANKS[6]);
+        board.removePiece(Piece.WHITE | Piece.PAWN, Bitboard.RANKS[1]);
 
-        assertEquals(BitBoard.RANKS[0], board.getPieces(Piece.WHITE));
-        assertEquals(0L, board.getPieces(Piece.WHITE | Piece.PAWN));
+        assertEquals(Bitboard.RANKS[0], board.getPieceBitboard(Piece.WHITE));
+        assertEquals(0L, board.getPieceBitboard(Piece.WHITE | Piece.PAWN));
 
-        assertEquals(BitBoard.RANKS[7], board.getPieces(Piece.BLACK));
-        assertEquals(0L, board.getPieces(Piece.BLACK | Piece.PAWN));
+        assertEquals(Bitboard.RANKS[7], board.getPieceBitboard(Piece.BLACK));
+        assertEquals(0L, board.getPieceBitboard(Piece.BLACK | Piece.PAWN));
 
-        assertEquals(BitBoard.ALL ^ (BitBoard.RANKS[0] | BitBoard.RANKS[7]), board.getPieces(Piece.UNOCCUPIED));
+        assertEquals(Bitboard.ALL ^ (Bitboard.RANKS[0] | Bitboard.RANKS[7]), board.getPieceBitboard(Piece.UNOCCUPIED));
     }
 
     @Test
     void applyMove_basicMove() {
         final Board board = Board.standard();
-        final Move move = Move.basicMove(BitBoard.POSITION[10], BitBoard.POSITION[18], Piece.WHITE | Piece.PAWN);
+        final Move move = Move.basicMove(Bitboard.INDEX[10], Bitboard.INDEX[18], Piece.WHITE | Piece.PAWN);
         final String beforeString = board.toString();
 
         board.applyMove(move);
 
-        assertEquals((BitBoard.RANKS[1] ^ BitBoard.POSITION[10]) | BitBoard.RANKS[0] | BitBoard.POSITION[18], board.getPieces(Piece.WHITE));
-        assertEquals((BitBoard.RANKS[1] ^ BitBoard.POSITION[10]) | BitBoard.POSITION[18], board.getPieces(Piece.WHITE | Piece.PAWN));
+        assertEquals((Bitboard.RANKS[1] ^ Bitboard.INDEX[10]) | Bitboard.RANKS[0] | Bitboard.INDEX[18], board.getPieceBitboard(Piece.WHITE));
+        assertEquals((Bitboard.RANKS[1] ^ Bitboard.INDEX[10]) | Bitboard.INDEX[18], board.getPieceBitboard(Piece.WHITE | Piece.PAWN));
 
-        assertEquals(BitBoard.RANKS[6] | BitBoard.RANKS[7], board.getPieces(Piece.BLACK));
+        assertEquals(Bitboard.RANKS[6] | Bitboard.RANKS[7], board.getPieceBitboard(Piece.BLACK));
 
-        assertEquals((BitBoard.ALL ^ (BitBoard.RANKS[0] | BitBoard.RANKS[1] | BitBoard.RANKS[6] | BitBoard.RANKS[7])) ^ (BitBoard.POSITION[10] | BitBoard.POSITION[18]), board.getPieces(Piece.UNOCCUPIED));
+        assertEquals((Bitboard.ALL ^ (Bitboard.RANKS[0] | Bitboard.RANKS[1] | Bitboard.RANKS[6] | Bitboard.RANKS[7])) ^ (Bitboard.INDEX[10] | Bitboard.INDEX[18]), board.getPieceBitboard(Piece.UNOCCUPIED));
 
         board.undoMove(move);
         assertEquals(beforeString, board.toString());
@@ -60,18 +60,18 @@ class BoardTest {
     @Test
     void applyMove_basicCapture() {
         final Board board = Board.standard();
-        final Move move = Move.basicCapture(BitBoard.POSITION[10], BitBoard.POSITION[53], Piece.WHITE | Piece.PAWN, Piece.BLACK | Piece.PAWN);
+        final Move move = Move.basicCapture(Bitboard.INDEX[10], Bitboard.INDEX[53], Piece.WHITE | Piece.PAWN, Piece.BLACK | Piece.PAWN);
         final String beforeString = board.toString();
 
         board.applyMove(move);
 
-        assertEquals((BitBoard.RANKS[1] ^ BitBoard.POSITION[10]) | BitBoard.RANKS[0] | BitBoard.POSITION[53], board.getPieces(Piece.WHITE));
-        assertEquals((BitBoard.RANKS[1] ^ BitBoard.POSITION[10]) | BitBoard.POSITION[53], board.getPieces(Piece.WHITE | Piece.PAWN));
+        assertEquals((Bitboard.RANKS[1] ^ Bitboard.INDEX[10]) | Bitboard.RANKS[0] | Bitboard.INDEX[53], board.getPieceBitboard(Piece.WHITE));
+        assertEquals((Bitboard.RANKS[1] ^ Bitboard.INDEX[10]) | Bitboard.INDEX[53], board.getPieceBitboard(Piece.WHITE | Piece.PAWN));
 
-        assertEquals((BitBoard.RANKS[6] | BitBoard.RANKS[7]) ^ BitBoard.POSITION[53], board.getPieces(Piece.BLACK));
-        assertEquals(BitBoard.RANKS[6] ^ BitBoard.POSITION[53], board.getPieces(Piece.BLACK | Piece.PAWN));
+        assertEquals((Bitboard.RANKS[6] | Bitboard.RANKS[7]) ^ Bitboard.INDEX[53], board.getPieceBitboard(Piece.BLACK));
+        assertEquals(Bitboard.RANKS[6] ^ Bitboard.INDEX[53], board.getPieceBitboard(Piece.BLACK | Piece.PAWN));
 
-        assertEquals((BitBoard.ALL ^ (BitBoard.RANKS[0] | BitBoard.RANKS[1] | BitBoard.RANKS[6] | BitBoard.RANKS[7])) ^ BitBoard.POSITION[10], board.getPieces(Piece.UNOCCUPIED));
+        assertEquals((Bitboard.ALL ^ (Bitboard.RANKS[0] | Bitboard.RANKS[1] | Bitboard.RANKS[6] | Bitboard.RANKS[7])) ^ Bitboard.INDEX[10], board.getPieceBitboard(Piece.UNOCCUPIED));
 
         board.undoMove(move);
         assertEquals(beforeString, board.toString());
@@ -80,22 +80,22 @@ class BoardTest {
     @Test
     void applyMove_pawnPromotion() {
         final Board board = Board.standard();
-        board.removePiece(Piece.ROOK, BitBoard.POSITION[56]);
-        board.removePiece(Piece.PAWN, BitBoard.POSITION[48]);
-        board.removePiece(Piece.WHITE | Piece.PAWN, BitBoard.POSITION[8]);
-        board.addPiece(Piece.WHITE | Piece.PAWN, BitBoard.POSITION[48]);
-        final Move move = Move.pawnPromotion(BitBoard.POSITION[48], BitBoard.POSITION[56], Piece.WHITE | Piece.PAWN, Piece.WHITE | Piece.QUEEN);
+        board.removePiece(Piece.ROOK, Bitboard.INDEX[56]);
+        board.removePiece(Piece.PAWN, Bitboard.INDEX[48]);
+        board.removePiece(Piece.WHITE | Piece.PAWN, Bitboard.INDEX[8]);
+        board.addPiece(Piece.WHITE | Piece.PAWN, Bitboard.INDEX[48]);
+        final Move move = Move.pawnPromotion(Bitboard.INDEX[48], Bitboard.INDEX[56], Piece.WHITE | Piece.PAWN, Piece.WHITE | Piece.QUEEN);
         final String beforeString = board.toString();
 
         board.applyMove(move);
 
-        assertEquals((BitBoard.RANKS[1] ^ BitBoard.POSITION[8]) | BitBoard.RANKS[0] | BitBoard.POSITION[56], board.getPieces(Piece.WHITE));
-        assertEquals(BitBoard.RANKS[1] ^ BitBoard.POSITION[8], board.getPieces(Piece.WHITE | Piece.PAWN));
-        assertEquals(BitBoard.POSITION[3] | BitBoard.POSITION[56], board.getPieces(Piece.WHITE | Piece.QUEEN));
+        assertEquals((Bitboard.RANKS[1] ^ Bitboard.INDEX[8]) | Bitboard.RANKS[0] | Bitboard.INDEX[56], board.getPieceBitboard(Piece.WHITE));
+        assertEquals(Bitboard.RANKS[1] ^ Bitboard.INDEX[8], board.getPieceBitboard(Piece.WHITE | Piece.PAWN));
+        assertEquals(Bitboard.INDEX[3] | Bitboard.INDEX[56], board.getPieceBitboard(Piece.WHITE | Piece.QUEEN));
 
-        assertEquals((BitBoard.RANKS[6] | BitBoard.RANKS[7]) ^ (BitBoard.POSITION[56] | BitBoard.POSITION[48]), board.getPieces(Piece.BLACK));
+        assertEquals((Bitboard.RANKS[6] | Bitboard.RANKS[7]) ^ (Bitboard.INDEX[56] | Bitboard.INDEX[48]), board.getPieceBitboard(Piece.BLACK));
 
-        assertEquals((BitBoard.ALL ^ (BitBoard.RANKS[0] | BitBoard.RANKS[1] | BitBoard.RANKS[6] | BitBoard.RANKS[7])) ^ (BitBoard.POSITION[8] | BitBoard.POSITION[48]), board.getPieces(Piece.UNOCCUPIED));
+        assertEquals((Bitboard.ALL ^ (Bitboard.RANKS[0] | Bitboard.RANKS[1] | Bitboard.RANKS[6] | Bitboard.RANKS[7])) ^ (Bitboard.INDEX[8] | Bitboard.INDEX[48]), board.getPieceBitboard(Piece.UNOCCUPIED));
 
         board.undoMove(move);
         assertEquals(beforeString, board.toString());
@@ -104,22 +104,22 @@ class BoardTest {
     @Test
     void applyMove_pawnPromotionWithCapture() {
         final Board board = Board.standard();
-        board.removePiece(Piece.PAWN, BitBoard.POSITION[48]);
-        board.removePiece(Piece.WHITE | Piece.PAWN, BitBoard.POSITION[8]);
-        board.addPiece(Piece.WHITE | Piece.PAWN, BitBoard.POSITION[48]);
-        final Move move = Move.pawnPromotionWithCapture(BitBoard.POSITION[48], BitBoard.POSITION[57], Piece.WHITE | Piece.PAWN, Piece.BLACK | Piece.KNIGHT, Piece.WHITE | Piece.ROOK);
+        board.removePiece(Piece.PAWN, Bitboard.INDEX[48]);
+        board.removePiece(Piece.WHITE | Piece.PAWN, Bitboard.INDEX[8]);
+        board.addPiece(Piece.WHITE | Piece.PAWN, Bitboard.INDEX[48]);
+        final Move move = Move.pawnPromotionWithCapture(Bitboard.INDEX[48], Bitboard.INDEX[57], Piece.WHITE | Piece.PAWN, Piece.BLACK | Piece.KNIGHT, Piece.WHITE | Piece.ROOK);
         final String beforeString = board.toString();
 
         board.applyMove(move);
 
-        assertEquals((BitBoard.RANKS[1] ^ BitBoard.POSITION[8]) | BitBoard.RANKS[0] | BitBoard.POSITION[57], board.getPieces(Piece.WHITE));
-        assertEquals(BitBoard.RANKS[1] ^ BitBoard.POSITION[8], board.getPieces(Piece.WHITE | Piece.PAWN));
-        assertEquals(BitBoard.POSITION[0] | BitBoard.POSITION[7] | BitBoard.POSITION[57], board.getPieces(Piece.WHITE | Piece.ROOK));
+        assertEquals((Bitboard.RANKS[1] ^ Bitboard.INDEX[8]) | Bitboard.RANKS[0] | Bitboard.INDEX[57], board.getPieceBitboard(Piece.WHITE));
+        assertEquals(Bitboard.RANKS[1] ^ Bitboard.INDEX[8], board.getPieceBitboard(Piece.WHITE | Piece.PAWN));
+        assertEquals(Bitboard.INDEX[0] | Bitboard.INDEX[7] | Bitboard.INDEX[57], board.getPieceBitboard(Piece.WHITE | Piece.ROOK));
 
-        assertEquals((BitBoard.RANKS[7] ^ BitBoard.POSITION[57]) | (BitBoard.RANKS[6] ^ BitBoard.POSITION[48]), board.getPieces(Piece.BLACK));
-        assertEquals(BitBoard.POSITION[62], board.getPieces(Piece.BLACK | Piece.KNIGHT));
+        assertEquals((Bitboard.RANKS[7] ^ Bitboard.INDEX[57]) | (Bitboard.RANKS[6] ^ Bitboard.INDEX[48]), board.getPieceBitboard(Piece.BLACK));
+        assertEquals(Bitboard.INDEX[62], board.getPieceBitboard(Piece.BLACK | Piece.KNIGHT));
 
-        assertEquals((BitBoard.ALL ^ (BitBoard.RANKS[0] | BitBoard.RANKS[1] | BitBoard.RANKS[6] | BitBoard.RANKS[7])) ^ (BitBoard.POSITION[8] | BitBoard.POSITION[48]), board.getPieces(Piece.UNOCCUPIED));
+        assertEquals((Bitboard.ALL ^ (Bitboard.RANKS[0] | Bitboard.RANKS[1] | Bitboard.RANKS[6] | Bitboard.RANKS[7])) ^ (Bitboard.INDEX[8] | Bitboard.INDEX[48]), board.getPieceBitboard(Piece.UNOCCUPIED));
 
         board.undoMove(move);
         assertEquals(beforeString, board.toString());
@@ -128,22 +128,22 @@ class BoardTest {
     @Test
     void applyMove_enPassantCapture() {
         final Board board = Board.standard();
-        board.removePiece(Piece.PAWN, BitBoard.POSITION[49]);
-        board.addPiece(Piece.PAWN, BitBoard.POSITION[33]);
-        board.removePiece(Piece.WHITE | Piece.PAWN, BitBoard.POSITION[8]);
-        board.addPiece(Piece.WHITE | Piece.PAWN, BitBoard.POSITION[32]);
-        final Move move = Move.enPassantCapture(BitBoard.POSITION[32], BitBoard.POSITION[41], Piece.WHITE | Piece.PAWN, Piece.BLACK | Piece.PAWN, BitBoard.POSITION[33]);
+        board.removePiece(Piece.PAWN, Bitboard.INDEX[49]);
+        board.addPiece(Piece.PAWN, Bitboard.INDEX[33]);
+        board.removePiece(Piece.WHITE | Piece.PAWN, Bitboard.INDEX[8]);
+        board.addPiece(Piece.WHITE | Piece.PAWN, Bitboard.INDEX[32]);
+        final Move move = Move.enPassantCapture(Bitboard.INDEX[32], Bitboard.INDEX[41], Piece.WHITE | Piece.PAWN, Piece.BLACK | Piece.PAWN, Bitboard.INDEX[33]);
         final String beforeString = board.toString();
 
         board.applyMove(move);
 
-        assertEquals((BitBoard.RANKS[1] ^ BitBoard.POSITION[8]) | BitBoard.RANKS[0] | BitBoard.POSITION[41], board.getPieces(Piece.WHITE));
-        assertEquals((BitBoard.RANKS[1] ^ BitBoard.POSITION[8]) | BitBoard.POSITION[41], board.getPieces(Piece.WHITE | Piece.PAWN));
+        assertEquals((Bitboard.RANKS[1] ^ Bitboard.INDEX[8]) | Bitboard.RANKS[0] | Bitboard.INDEX[41], board.getPieceBitboard(Piece.WHITE));
+        assertEquals((Bitboard.RANKS[1] ^ Bitboard.INDEX[8]) | Bitboard.INDEX[41], board.getPieceBitboard(Piece.WHITE | Piece.PAWN));
 
-        assertEquals(BitBoard.RANKS[7] | (BitBoard.RANKS[6] ^ BitBoard.POSITION[49]), board.getPieces(Piece.BLACK));
-        assertEquals(BitBoard.RANKS[6] ^ BitBoard.POSITION[49], board.getPieces(Piece.BLACK | Piece.PAWN));
+        assertEquals(Bitboard.RANKS[7] | (Bitboard.RANKS[6] ^ Bitboard.INDEX[49]), board.getPieceBitboard(Piece.BLACK));
+        assertEquals(Bitboard.RANKS[6] ^ Bitboard.INDEX[49], board.getPieceBitboard(Piece.BLACK | Piece.PAWN));
 
-        assertEquals((BitBoard.ALL ^ (BitBoard.RANKS[0] | BitBoard.RANKS[1] | BitBoard.RANKS[6] | BitBoard.RANKS[7])) ^ (BitBoard.POSITION[8] | BitBoard.POSITION[49] | BitBoard.POSITION[41]), board.getPieces(Piece.UNOCCUPIED));
+        assertEquals((Bitboard.ALL ^ (Bitboard.RANKS[0] | Bitboard.RANKS[1] | Bitboard.RANKS[6] | Bitboard.RANKS[7])) ^ (Bitboard.INDEX[8] | Bitboard.INDEX[49] | Bitboard.INDEX[41]), board.getPieceBitboard(Piece.UNOCCUPIED));
 
         board.undoMove(move);
         assertEquals(beforeString, board.toString());
@@ -152,18 +152,18 @@ class BoardTest {
     @Test
     void applyMove_doublePush() {
         final Board board = Board.standard();
-        final Move move = Move.doublePush(BitBoard.POSITION[8], BitBoard.POSITION[24], Piece.WHITE | Piece.PAWN, BitBoard.POSITION[16]);
+        final Move move = Move.doublePush(Bitboard.INDEX[8], Bitboard.INDEX[24], Piece.WHITE | Piece.PAWN, Bitboard.INDEX[16]);
         final String beforeString = board.toString();
 
         board.applyMove(move);
 
-        assertEquals((BitBoard.RANKS[1] ^ BitBoard.POSITION[8]) | BitBoard.RANKS[0] | BitBoard.POSITION[24], board.getPieces(Piece.WHITE));
-        assertEquals((BitBoard.RANKS[1] ^ BitBoard.POSITION[8]) | BitBoard.POSITION[24], board.getPieces(Piece.WHITE | Piece.PAWN));
+        assertEquals((Bitboard.RANKS[1] ^ Bitboard.INDEX[8]) | Bitboard.RANKS[0] | Bitboard.INDEX[24], board.getPieceBitboard(Piece.WHITE));
+        assertEquals((Bitboard.RANKS[1] ^ Bitboard.INDEX[8]) | Bitboard.INDEX[24], board.getPieceBitboard(Piece.WHITE | Piece.PAWN));
 
-        assertEquals(BitBoard.RANKS[7] | BitBoard.RANKS[6], board.getPieces(Piece.BLACK));
-        assertEquals(BitBoard.RANKS[6], board.getPieces(Piece.BLACK | Piece.PAWN));
+        assertEquals(Bitboard.RANKS[7] | Bitboard.RANKS[6], board.getPieceBitboard(Piece.BLACK));
+        assertEquals(Bitboard.RANKS[6], board.getPieceBitboard(Piece.BLACK | Piece.PAWN));
 
-        assertEquals((BitBoard.ALL ^ (BitBoard.RANKS[0] | BitBoard.RANKS[1] | BitBoard.RANKS[6] | BitBoard.RANKS[7])) ^ (BitBoard.POSITION[8] | BitBoard.POSITION[24]), board.getPieces(Piece.UNOCCUPIED));
+        assertEquals((Bitboard.ALL ^ (Bitboard.RANKS[0] | Bitboard.RANKS[1] | Bitboard.RANKS[6] | Bitboard.RANKS[7])) ^ (Bitboard.INDEX[8] | Bitboard.INDEX[24]), board.getPieceBitboard(Piece.UNOCCUPIED));
 
         board.undoMove(move);
         assertEquals(beforeString, board.toString());
@@ -172,21 +172,21 @@ class BoardTest {
     @Test
     void applyMove_castle_white_kingSide() {
         final Board board = Board.standard();
-        board.removePiece(Piece.WHITE | Piece.BISHOP, BitBoard.POSITION[5]);
-        board.removePiece(Piece.WHITE | Piece.KNIGHT, BitBoard.POSITION[6]);
-        final Move move = Move.castle(BitBoard.POSITION[4], BitBoard.POSITION[6], Piece.WHITE | Piece.KING, BitBoard.POSITION[5] | BitBoard.POSITION[7]);
+        board.removePiece(Piece.WHITE | Piece.BISHOP, Bitboard.INDEX[5]);
+        board.removePiece(Piece.WHITE | Piece.KNIGHT, Bitboard.INDEX[6]);
+        final Move move = Move.castle(Bitboard.INDEX[4], Bitboard.INDEX[6], Piece.WHITE | Piece.KING, Bitboard.INDEX[5] | Bitboard.INDEX[7]);
         final String beforeString = board.toString();
 
         board.applyMove(move);
 
-        assertEquals(BitBoard.RANKS[1] | BitBoard.RANKS[0] ^ (BitBoard.POSITION[4] | BitBoard.POSITION[7]), board.getPieces(Piece.WHITE));
-        assertEquals(BitBoard.POSITION[6], board.getPieces(Piece.WHITE | Piece.KING));
-        assertEquals(BitBoard.POSITION[0] | BitBoard.POSITION[5], board.getPieces(Piece.WHITE | Piece.ROOK));
+        assertEquals(Bitboard.RANKS[1] | Bitboard.RANKS[0] ^ (Bitboard.INDEX[4] | Bitboard.INDEX[7]), board.getPieceBitboard(Piece.WHITE));
+        assertEquals(Bitboard.INDEX[6], board.getPieceBitboard(Piece.WHITE | Piece.KING));
+        assertEquals(Bitboard.INDEX[0] | Bitboard.INDEX[5], board.getPieceBitboard(Piece.WHITE | Piece.ROOK));
 
-        assertEquals(BitBoard.RANKS[7] | BitBoard.RANKS[6], board.getPieces(Piece.BLACK));
-        assertEquals(BitBoard.RANKS[6], board.getPieces(Piece.BLACK | Piece.PAWN));
+        assertEquals(Bitboard.RANKS[7] | Bitboard.RANKS[6], board.getPieceBitboard(Piece.BLACK));
+        assertEquals(Bitboard.RANKS[6], board.getPieceBitboard(Piece.BLACK | Piece.PAWN));
 
-        assertEquals((BitBoard.ALL ^ (BitBoard.RANKS[0] | BitBoard.RANKS[1] | BitBoard.RANKS[6] | BitBoard.RANKS[7])) ^ (BitBoard.POSITION[7] | BitBoard.POSITION[4]), board.getPieces(Piece.UNOCCUPIED));
+        assertEquals((Bitboard.ALL ^ (Bitboard.RANKS[0] | Bitboard.RANKS[1] | Bitboard.RANKS[6] | Bitboard.RANKS[7])) ^ (Bitboard.INDEX[7] | Bitboard.INDEX[4]), board.getPieceBitboard(Piece.UNOCCUPIED));
 
         board.undoMove(move);
         assertEquals(beforeString, board.toString());
@@ -195,22 +195,22 @@ class BoardTest {
     @Test
     void applyMove_castle_white_queenSide() {
         final Board board = Board.standard();
-        board.removePiece(Piece.WHITE | Piece.KNIGHT, BitBoard.POSITION[1]);
-        board.removePiece(Piece.WHITE | Piece.BISHOP, BitBoard.POSITION[2]);
-        board.removePiece(Piece.WHITE | Piece.QUEEN, BitBoard.POSITION[3]);
-        final Move move = Move.castle(BitBoard.POSITION[4], BitBoard.POSITION[2], Piece.WHITE | Piece.KING, BitBoard.POSITION[0] | BitBoard.POSITION[3]);
+        board.removePiece(Piece.WHITE | Piece.KNIGHT, Bitboard.INDEX[1]);
+        board.removePiece(Piece.WHITE | Piece.BISHOP, Bitboard.INDEX[2]);
+        board.removePiece(Piece.WHITE | Piece.QUEEN, Bitboard.INDEX[3]);
+        final Move move = Move.castle(Bitboard.INDEX[4], Bitboard.INDEX[2], Piece.WHITE | Piece.KING, Bitboard.INDEX[0] | Bitboard.INDEX[3]);
         final String beforeString = board.toString();
 
         board.applyMove(move);
 
-        assertEquals(BitBoard.RANKS[1] | BitBoard.RANKS[0] ^ (BitBoard.POSITION[0] | BitBoard.POSITION[1] | BitBoard.POSITION[4]), board.getPieces(Piece.WHITE));
-        assertEquals(BitBoard.POSITION[2], board.getPieces(Piece.WHITE | Piece.KING));
-        assertEquals(BitBoard.POSITION[3] | BitBoard.POSITION[7], board.getPieces(Piece.WHITE | Piece.ROOK));
+        assertEquals(Bitboard.RANKS[1] | Bitboard.RANKS[0] ^ (Bitboard.INDEX[0] | Bitboard.INDEX[1] | Bitboard.INDEX[4]), board.getPieceBitboard(Piece.WHITE));
+        assertEquals(Bitboard.INDEX[2], board.getPieceBitboard(Piece.WHITE | Piece.KING));
+        assertEquals(Bitboard.INDEX[3] | Bitboard.INDEX[7], board.getPieceBitboard(Piece.WHITE | Piece.ROOK));
 
-        assertEquals(BitBoard.RANKS[7] | BitBoard.RANKS[6], board.getPieces(Piece.BLACK));
-        assertEquals(BitBoard.RANKS[6], board.getPieces(Piece.BLACK | Piece.PAWN));
+        assertEquals(Bitboard.RANKS[7] | Bitboard.RANKS[6], board.getPieceBitboard(Piece.BLACK));
+        assertEquals(Bitboard.RANKS[6], board.getPieceBitboard(Piece.BLACK | Piece.PAWN));
 
-        assertEquals((BitBoard.ALL ^ (BitBoard.RANKS[0] | BitBoard.RANKS[1] | BitBoard.RANKS[6] | BitBoard.RANKS[7])) ^ (BitBoard.POSITION[0] | BitBoard.POSITION[1] | BitBoard.POSITION[4]), board.getPieces(Piece.UNOCCUPIED));
+        assertEquals((Bitboard.ALL ^ (Bitboard.RANKS[0] | Bitboard.RANKS[1] | Bitboard.RANKS[6] | Bitboard.RANKS[7])) ^ (Bitboard.INDEX[0] | Bitboard.INDEX[1] | Bitboard.INDEX[4]), board.getPieceBitboard(Piece.UNOCCUPIED));
 
         board.undoMove(move);
         assertEquals(beforeString, board.toString());
@@ -219,21 +219,21 @@ class BoardTest {
     @Test
     void applyMove_castle_black_kingSide() {
         final Board board = Board.standard();
-        board.removePiece(Piece.BLACK | Piece.BISHOP, BitBoard.POSITION[61]);
-        board.removePiece(Piece.BLACK | Piece.KNIGHT, BitBoard.POSITION[62]);
-        final Move move = Move.castle(BitBoard.POSITION[60], BitBoard.POSITION[62], Piece.BLACK | Piece.KING, BitBoard.POSITION[61] | BitBoard.POSITION[63]);
+        board.removePiece(Piece.BLACK | Piece.BISHOP, Bitboard.INDEX[61]);
+        board.removePiece(Piece.BLACK | Piece.KNIGHT, Bitboard.INDEX[62]);
+        final Move move = Move.castle(Bitboard.INDEX[60], Bitboard.INDEX[62], Piece.BLACK | Piece.KING, Bitboard.INDEX[61] | Bitboard.INDEX[63]);
         final String beforeString = board.toString();
 
         board.applyMove(move);
 
-        assertEquals(BitBoard.RANKS[1] | BitBoard.RANKS[0], board.getPieces(Piece.WHITE));
-        assertEquals(BitBoard.RANKS[1], board.getPieces(Piece.WHITE | Piece.PAWN));
+        assertEquals(Bitboard.RANKS[1] | Bitboard.RANKS[0], board.getPieceBitboard(Piece.WHITE));
+        assertEquals(Bitboard.RANKS[1], board.getPieceBitboard(Piece.WHITE | Piece.PAWN));
 
-        assertEquals((BitBoard.RANKS[7] | BitBoard.RANKS[6]) ^ (BitBoard.POSITION[63] | BitBoard.POSITION[60]), board.getPieces(Piece.BLACK));
-        assertEquals(BitBoard.POSITION[62], board.getPieces(Piece.BLACK | Piece.KING));
-        assertEquals(BitBoard.POSITION[56] | BitBoard.POSITION[61], board.getPieces(Piece.BLACK | Piece.ROOK));
+        assertEquals((Bitboard.RANKS[7] | Bitboard.RANKS[6]) ^ (Bitboard.INDEX[63] | Bitboard.INDEX[60]), board.getPieceBitboard(Piece.BLACK));
+        assertEquals(Bitboard.INDEX[62], board.getPieceBitboard(Piece.BLACK | Piece.KING));
+        assertEquals(Bitboard.INDEX[56] | Bitboard.INDEX[61], board.getPieceBitboard(Piece.BLACK | Piece.ROOK));
 
-        assertEquals((BitBoard.ALL ^ (BitBoard.RANKS[0] | BitBoard.RANKS[1] | BitBoard.RANKS[6] | BitBoard.RANKS[7])) ^ (BitBoard.POSITION[63] | BitBoard.POSITION[60]), board.getPieces(Piece.UNOCCUPIED));
+        assertEquals((Bitboard.ALL ^ (Bitboard.RANKS[0] | Bitboard.RANKS[1] | Bitboard.RANKS[6] | Bitboard.RANKS[7])) ^ (Bitboard.INDEX[63] | Bitboard.INDEX[60]), board.getPieceBitboard(Piece.UNOCCUPIED));
 
         board.undoMove(move);
         assertEquals(beforeString, board.toString());
@@ -242,22 +242,22 @@ class BoardTest {
     @Test
     void applyMove_castle_black_queenSide() {
         final Board board = Board.standard();
-        board.removePiece(Piece.BLACK | Piece.KNIGHT, BitBoard.POSITION[57]);
-        board.removePiece(Piece.BLACK | Piece.BISHOP, BitBoard.POSITION[58]);
-        board.removePiece(Piece.BLACK | Piece.QUEEN, BitBoard.POSITION[59]);
-        final Move move = Move.castle(BitBoard.POSITION[60], BitBoard.POSITION[58], Piece.BLACK | Piece.KING, BitBoard.POSITION[56] | BitBoard.POSITION[59]);
+        board.removePiece(Piece.BLACK | Piece.KNIGHT, Bitboard.INDEX[57]);
+        board.removePiece(Piece.BLACK | Piece.BISHOP, Bitboard.INDEX[58]);
+        board.removePiece(Piece.BLACK | Piece.QUEEN, Bitboard.INDEX[59]);
+        final Move move = Move.castle(Bitboard.INDEX[60], Bitboard.INDEX[58], Piece.BLACK | Piece.KING, Bitboard.INDEX[56] | Bitboard.INDEX[59]);
         final String beforeString = board.toString();
 
         board.applyMove(move);
 
-        assertEquals(BitBoard.RANKS[0] | BitBoard.RANKS[1], board.getPieces(Piece.WHITE));
-        assertEquals(BitBoard.RANKS[1], board.getPieces(Piece.WHITE | Piece.PAWN));
+        assertEquals(Bitboard.RANKS[0] | Bitboard.RANKS[1], board.getPieceBitboard(Piece.WHITE));
+        assertEquals(Bitboard.RANKS[1], board.getPieceBitboard(Piece.WHITE | Piece.PAWN));
 
-        assertEquals((BitBoard.RANKS[6] | BitBoard.RANKS[7]) ^ (BitBoard.POSITION[56] | BitBoard.POSITION[57] | BitBoard.POSITION[60]), board.getPieces(Piece.BLACK));
-        assertEquals(BitBoard.POSITION[58], board.getPieces(Piece.BLACK | Piece.KING));
-        assertEquals(BitBoard.POSITION[63] | BitBoard.POSITION[59], board.getPieces(Piece.BLACK | Piece.ROOK));
+        assertEquals((Bitboard.RANKS[6] | Bitboard.RANKS[7]) ^ (Bitboard.INDEX[56] | Bitboard.INDEX[57] | Bitboard.INDEX[60]), board.getPieceBitboard(Piece.BLACK));
+        assertEquals(Bitboard.INDEX[58], board.getPieceBitboard(Piece.BLACK | Piece.KING));
+        assertEquals(Bitboard.INDEX[63] | Bitboard.INDEX[59], board.getPieceBitboard(Piece.BLACK | Piece.ROOK));
 
-        assertEquals((BitBoard.ALL ^ (BitBoard.RANKS[0] | BitBoard.RANKS[1] | BitBoard.RANKS[6] | BitBoard.RANKS[7])) ^ (BitBoard.POSITION[56] | BitBoard.POSITION[57] | BitBoard.POSITION[60]), board.getPieces(Piece.UNOCCUPIED));
+        assertEquals((Bitboard.ALL ^ (Bitboard.RANKS[0] | Bitboard.RANKS[1] | Bitboard.RANKS[6] | Bitboard.RANKS[7])) ^ (Bitboard.INDEX[56] | Bitboard.INDEX[57] | Bitboard.INDEX[60]), board.getPieceBitboard(Piece.UNOCCUPIED));
 
         board.undoMove(move);
         assertEquals(beforeString, board.toString());
@@ -266,35 +266,35 @@ class BoardTest {
     @Test
     void getPieceAtBitFromTeam() {
         final Board board = Board.standard();
-        assertEquals(Piece.WHITE | Piece.ROOK, board.getPieceAtBitFromTeam(BitBoard.POSITION[0], true));
-        assertEquals(Piece.WHITE | Piece.KING, board.getPieceAtBitFromTeam(BitBoard.POSITION[4], true));
-        assertEquals(Piece.WHITE | Piece.PAWN, board.getPieceAtBitFromTeam(BitBoard.POSITION[15], true));
-        assertEquals(Piece.WHITE | Piece.QUEEN, board.getPieceAtBitFromTeam(BitBoard.POSITION[3], true));
+        assertEquals(Piece.WHITE | Piece.ROOK, board.getPieceAtBitFromTeam(Bitboard.INDEX[0], true));
+        assertEquals(Piece.WHITE | Piece.KING, board.getPieceAtBitFromTeam(Bitboard.INDEX[4], true));
+        assertEquals(Piece.WHITE | Piece.PAWN, board.getPieceAtBitFromTeam(Bitboard.INDEX[15], true));
+        assertEquals(Piece.WHITE | Piece.QUEEN, board.getPieceAtBitFromTeam(Bitboard.INDEX[3], true));
 
-        assertEquals(Piece.BLACK | Piece.ROOK, board.getPieceAtBitFromTeam(BitBoard.POSITION[63], false));
-        assertEquals(Piece.BLACK | Piece.KING, board.getPieceAtBitFromTeam(BitBoard.POSITION[60], false));
-        assertEquals(Piece.BLACK | Piece.PAWN, board.getPieceAtBitFromTeam(BitBoard.POSITION[54], false));
-        assertEquals(Piece.BLACK | Piece.QUEEN, board.getPieceAtBitFromTeam(BitBoard.POSITION[59], false));
+        assertEquals(Piece.BLACK | Piece.ROOK, board.getPieceAtBitFromTeam(Bitboard.INDEX[63], false));
+        assertEquals(Piece.BLACK | Piece.KING, board.getPieceAtBitFromTeam(Bitboard.INDEX[60], false));
+        assertEquals(Piece.BLACK | Piece.PAWN, board.getPieceAtBitFromTeam(Bitboard.INDEX[54], false));
+        assertEquals(Piece.BLACK | Piece.QUEEN, board.getPieceAtBitFromTeam(Bitboard.INDEX[59], false));
 
-        assertEquals(Piece.UNOCCUPIED, board.getPieceAtBitFromTeam(BitBoard.POSITION[43], true));
-        assertEquals(Piece.UNOCCUPIED, board.getPieceAtBitFromTeam(BitBoard.POSITION[25], false));
+        assertEquals(Piece.UNOCCUPIED, board.getPieceAtBitFromTeam(Bitboard.INDEX[43], true));
+        assertEquals(Piece.UNOCCUPIED, board.getPieceAtBitFromTeam(Bitboard.INDEX[25], false));
     }
 
     @Test
     void testGetPieceAtBitFromTeam() {
         final Board board = Board.standard();
-        assertEquals(Piece.WHITE | Piece.ROOK, board.getPieceAtBitFromTeam(BitBoard.POSITION[0], Piece.WHITE));
-        assertEquals(Piece.WHITE | Piece.KING, board.getPieceAtBitFromTeam(BitBoard.POSITION[4], Piece.WHITE));
-        assertEquals(Piece.WHITE | Piece.PAWN, board.getPieceAtBitFromTeam(BitBoard.POSITION[15], Piece.WHITE));
-        assertEquals(Piece.WHITE | Piece.QUEEN, board.getPieceAtBitFromTeam(BitBoard.POSITION[3], Piece.WHITE));
+        assertEquals(Piece.WHITE | Piece.ROOK, board.getPieceAtBitFromTeam(Bitboard.INDEX[0], Piece.WHITE));
+        assertEquals(Piece.WHITE | Piece.KING, board.getPieceAtBitFromTeam(Bitboard.INDEX[4], Piece.WHITE));
+        assertEquals(Piece.WHITE | Piece.PAWN, board.getPieceAtBitFromTeam(Bitboard.INDEX[15], Piece.WHITE));
+        assertEquals(Piece.WHITE | Piece.QUEEN, board.getPieceAtBitFromTeam(Bitboard.INDEX[3], Piece.WHITE));
 
-        assertEquals(Piece.BLACK | Piece.ROOK, board.getPieceAtBitFromTeam(BitBoard.POSITION[63], Piece.BLACK));
-        assertEquals(Piece.BLACK | Piece.KING, board.getPieceAtBitFromTeam(BitBoard.POSITION[60], Piece.BLACK));
-        assertEquals(Piece.BLACK | Piece.PAWN, board.getPieceAtBitFromTeam(BitBoard.POSITION[54], Piece.BLACK));
-        assertEquals(Piece.BLACK | Piece.QUEEN, board.getPieceAtBitFromTeam(BitBoard.POSITION[59], Piece.BLACK));
+        assertEquals(Piece.BLACK | Piece.ROOK, board.getPieceAtBitFromTeam(Bitboard.INDEX[63], Piece.BLACK));
+        assertEquals(Piece.BLACK | Piece.KING, board.getPieceAtBitFromTeam(Bitboard.INDEX[60], Piece.BLACK));
+        assertEquals(Piece.BLACK | Piece.PAWN, board.getPieceAtBitFromTeam(Bitboard.INDEX[54], Piece.BLACK));
+        assertEquals(Piece.BLACK | Piece.QUEEN, board.getPieceAtBitFromTeam(Bitboard.INDEX[59], Piece.BLACK));
 
-        assertEquals(Piece.UNOCCUPIED, board.getPieceAtBitFromTeam(BitBoard.POSITION[43], Piece.WHITE));
-        assertEquals(Piece.UNOCCUPIED, board.getPieceAtBitFromTeam(BitBoard.POSITION[25], Piece.BLACK));
+        assertEquals(Piece.UNOCCUPIED, board.getPieceAtBitFromTeam(Bitboard.INDEX[43], Piece.WHITE));
+        assertEquals(Piece.UNOCCUPIED, board.getPieceAtBitFromTeam(Bitboard.INDEX[25], Piece.BLACK));
     }
 
     @Test
@@ -302,56 +302,56 @@ class BoardTest {
         final Board board = Board.empty();
 
         // Just Kings
-        board.addPiece(Piece.WHITE | Piece.KING, BitBoard.POSITION[0]);
-        board.addPiece(Piece.BLACK | Piece.KING, BitBoard.POSITION[2]);
+        board.addPiece(Piece.WHITE | Piece.KING, Bitboard.INDEX[0]);
+        board.addPiece(Piece.BLACK | Piece.KING, Bitboard.INDEX[2]);
         assertTrue(Board.isDeadPosition(board));
 
         // King + Knight vs King
-        board.addPiece(Piece.WHITE | Piece.KNIGHT, BitBoard.POSITION[10]);
+        board.addPiece(Piece.WHITE | Piece.KNIGHT, Bitboard.INDEX[10]);
         assertTrue(Board.isDeadPosition(board));
-        board.removePiece(Piece.WHITE | Piece.KNIGHT, BitBoard.POSITION[10]);
-        board.addPiece(Piece.BLACK | Piece.KNIGHT, BitBoard.POSITION[10]);
+        board.removePiece(Piece.WHITE | Piece.KNIGHT, Bitboard.INDEX[10]);
+        board.addPiece(Piece.BLACK | Piece.KNIGHT, Bitboard.INDEX[10]);
         assertTrue(Board.isDeadPosition(board));
-        board.removePiece(Piece.BLACK | Piece.KNIGHT, BitBoard.POSITION[10]);
+        board.removePiece(Piece.BLACK | Piece.KNIGHT, Bitboard.INDEX[10]);
 
         // King + Bishop vs King
-        board.addPiece(Piece.WHITE | Piece.BISHOP, BitBoard.POSITION[10]);
+        board.addPiece(Piece.WHITE | Piece.BISHOP, Bitboard.INDEX[10]);
         assertTrue(Board.isDeadPosition(board));
-        board.removePiece(Piece.WHITE | Piece.BISHOP, BitBoard.POSITION[10]);
-        board.addPiece(Piece.BLACK | Piece.BISHOP, BitBoard.POSITION[10]);
+        board.removePiece(Piece.WHITE | Piece.BISHOP, Bitboard.INDEX[10]);
+        board.addPiece(Piece.BLACK | Piece.BISHOP, Bitboard.INDEX[10]);
         assertTrue(Board.isDeadPosition(board));
-        board.removePiece(Piece.BLACK | Piece.BISHOP, BitBoard.POSITION[10]);
+        board.removePiece(Piece.BLACK | Piece.BISHOP, Bitboard.INDEX[10]);
 
         // King + Knight vs King + Knight
-        board.addPiece(Piece.WHITE | Piece.KNIGHT, BitBoard.POSITION[10]);
-        board.addPiece(Piece.BLACK | Piece.KNIGHT, BitBoard.POSITION[11]);
+        board.addPiece(Piece.WHITE | Piece.KNIGHT, Bitboard.INDEX[10]);
+        board.addPiece(Piece.BLACK | Piece.KNIGHT, Bitboard.INDEX[11]);
         assertFalse(Board.isDeadPosition(board));
-        board.removePiece(Piece.BLACK | Piece.KNIGHT, BitBoard.POSITION[11]);
-        board.removePiece(Piece.WHITE | Piece.KNIGHT, BitBoard.POSITION[10]);
+        board.removePiece(Piece.BLACK | Piece.KNIGHT, Bitboard.INDEX[11]);
+        board.removePiece(Piece.WHITE | Piece.KNIGHT, Bitboard.INDEX[10]);
 
         // King + Bishop vs King + Bishop (same colour)
-        board.addPiece(Piece.WHITE | Piece.BISHOP, BitBoard.POSITION[7]);
-        board.addPiece(Piece.BLACK | Piece.BISHOP, BitBoard.POSITION[23]);
+        board.addPiece(Piece.WHITE | Piece.BISHOP, Bitboard.INDEX[7]);
+        board.addPiece(Piece.BLACK | Piece.BISHOP, Bitboard.INDEX[23]);
         assertTrue(Board.isDeadPosition(board));
-        board.removePiece(Piece.BLACK | Piece.BISHOP, BitBoard.POSITION[23]);
-        board.removePiece(Piece.WHITE | Piece.BISHOP, BitBoard.POSITION[7]);
+        board.removePiece(Piece.BLACK | Piece.BISHOP, Bitboard.INDEX[23]);
+        board.removePiece(Piece.WHITE | Piece.BISHOP, Bitboard.INDEX[7]);
 
         // King + Bishop vs King + Bishop (different colour)
-        board.addPiece(Piece.WHITE | Piece.BISHOP, BitBoard.POSITION[7]);
-        board.addPiece(Piece.BLACK | Piece.BISHOP, BitBoard.POSITION[15]);
+        board.addPiece(Piece.WHITE | Piece.BISHOP, Bitboard.INDEX[7]);
+        board.addPiece(Piece.BLACK | Piece.BISHOP, Bitboard.INDEX[15]);
         assertFalse(Board.isDeadPosition(board));
-        board.removePiece(Piece.BLACK | Piece.BISHOP, BitBoard.POSITION[15]);
-        board.removePiece(Piece.WHITE | Piece.BISHOP, BitBoard.POSITION[7]);
+        board.removePiece(Piece.BLACK | Piece.BISHOP, Bitboard.INDEX[15]);
+        board.removePiece(Piece.WHITE | Piece.BISHOP, Bitboard.INDEX[7]);
 
         // King + Rook vs King
-        board.addPiece(Piece.WHITE | Piece.ROOK, BitBoard.POSITION[7]);
+        board.addPiece(Piece.WHITE | Piece.ROOK, Bitboard.INDEX[7]);
         assertFalse(Board.isDeadPosition(board));
-        board.removePiece(Piece.WHITE | Piece.ROOK, BitBoard.POSITION[7]);
+        board.removePiece(Piece.WHITE | Piece.ROOK, Bitboard.INDEX[7]);
 
         // King + Rook vs King
-        board.addPiece(Piece.BLACK | Piece.ROOK, BitBoard.POSITION[7]);
+        board.addPiece(Piece.BLACK | Piece.ROOK, Bitboard.INDEX[7]);
         assertFalse(Board.isDeadPosition(board));
-        board.removePiece(Piece.BLACK | Piece.ROOK, BitBoard.POSITION[7]);
+        board.removePiece(Piece.BLACK | Piece.ROOK, Bitboard.INDEX[7]);
     }
 
     @Test
@@ -360,20 +360,20 @@ class BoardTest {
 
         final Board board = Board.empty();
         assertEquals(board, Board.fromFen("8/8/8/8/8/8/8/8"));
-        board.addPiece(Piece.WHITE | Piece.KING, BitBoard.POSITION[1]);
-        board.addPiece(Piece.BLACK | Piece.KING, BitBoard.POSITION[62]);
+        board.addPiece(Piece.WHITE | Piece.KING, Bitboard.INDEX[1]);
+        board.addPiece(Piece.BLACK | Piece.KING, Bitboard.INDEX[62]);
         assertEquals(board, Board.fromFen("6k1/8/8/8/8/8/8/1K6"));
     }
 
     @Test
     void toFen() {
-        assertEquals("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR", Board.standard().toFen());
+        assertEquals("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR", Fen.fromBoard(Board.standard()));
 
         final Board board = Board.empty();
-        assertEquals("8/8/8/8/8/8/8/8", board.toFen());
-        board.addPiece(Piece.WHITE | Piece.KING, BitBoard.POSITION[1]);
-        board.addPiece(Piece.BLACK | Piece.KING, BitBoard.POSITION[62]);
-        assertEquals("6k1/8/8/8/8/8/8/1K6", board.toFen());
+        assertEquals("8/8/8/8/8/8/8/8", Fen.fromBoard(board));
+        board.addPiece(Piece.WHITE | Piece.KING, Bitboard.INDEX[1]);
+        board.addPiece(Piece.BLACK | Piece.KING, Bitboard.INDEX[62]);
+        assertEquals("6k1/8/8/8/8/8/8/1K6", Fen.fromBoard(board));
     }
 
     @Test
@@ -411,7 +411,7 @@ class BoardTest {
                 "|   |   |   |   |   |   |   |   |\n" +
                 "| R | N | B | Q | K | B | N | R |\n" +
                 "|   |   |   |   |   |   |   |   |\n" +
-                "+---+---+---+---+---+---+---+---+\n", Board.standard().toString());
+                "+---+---+---+---+---+---+---+---+\n", Board.standard().debugString());
     }
 
 }

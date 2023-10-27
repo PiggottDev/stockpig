@@ -10,7 +10,7 @@ class CastlingTest {
 
     @Test
     void getCastlesAllowedAfterMove_white_takeKingSideRook() {
-        final Move move = Move.basicCapture(BitBoard.POSITION[54], BitBoard.POSITION[63], Piece.WHITE | Piece.QUEEN, Piece.BLACK | Piece.ROOK);
+        final Move move = Move.basicCapture(Bitboard.INDEX[54], Bitboard.INDEX[63], Piece.WHITE | Piece.QUEEN, Piece.BLACK | Piece.ROOK);
 
         assertEquals(0b1110, Castling.getCastlesAllowedAfterMove(Castling.ALL_ALLOWED, move, true));
 
@@ -27,7 +27,7 @@ class CastlingTest {
 
     @Test
     void getCastlesAllowedAfterMove_white_takeQueenSideRook() {
-        final Move move = Move.basicCapture(BitBoard.POSITION[32], BitBoard.POSITION[56], Piece.WHITE | Piece.BISHOP, Piece.BLACK | Piece.ROOK);
+        final Move move = Move.basicCapture(Bitboard.INDEX[32], Bitboard.INDEX[56], Piece.WHITE | Piece.BISHOP, Piece.BLACK | Piece.ROOK);
 
         assertEquals(0b1101, Castling.getCastlesAllowedAfterMove(Castling.ALL_ALLOWED, move, true));
 
@@ -44,7 +44,7 @@ class CastlingTest {
 
     @Test
     void getCastlesAllowedAfterMove_white_moveKing() {
-        final Move move = Move.basicMove(BitBoard.POSITION[4], BitBoard.POSITION[12], Piece.WHITE | Piece.KING);
+        final Move move = Move.basicMove(Bitboard.INDEX[4], Bitboard.INDEX[12], Piece.WHITE | Piece.KING);
 
         assertEquals(0b0011, Castling.getCastlesAllowedAfterMove(Castling.ALL_ALLOWED, move, true));
 
@@ -61,7 +61,7 @@ class CastlingTest {
 
     @Test
     void getCastlesAllowedAfterMove_white_moveKingSideRook() {
-        final Move move = Move.basicMove(BitBoard.POSITION[7], BitBoard.POSITION[19], Piece.WHITE | Piece.ROOK);
+        final Move move = Move.basicMove(Bitboard.INDEX[7], Bitboard.INDEX[19], Piece.WHITE | Piece.ROOK);
 
         assertEquals(0b1011, Castling.getCastlesAllowedAfterMove(Castling.ALL_ALLOWED, move, true));
 
@@ -78,7 +78,7 @@ class CastlingTest {
 
     @Test
     void getCastlesAllowedAfterMove_white_moveQueenSideRook() {
-        final Move move = Move.basicMove(BitBoard.POSITION[0], BitBoard.POSITION[12], Piece.WHITE | Piece.ROOK);
+        final Move move = Move.basicMove(Bitboard.INDEX[0], Bitboard.INDEX[12], Piece.WHITE | Piece.ROOK);
 
         assertEquals(0b0111, Castling.getCastlesAllowedAfterMove(Castling.ALL_ALLOWED, move, true));
 
@@ -96,107 +96,107 @@ class CastlingTest {
     @Test
     void getKingSideCastleIfPossible_white() {
         // Empty board
-        assertNotNull(Castling.getKingSideCastleIfPossible(Castling.ALL_ALLOWED, true, BitBoard.ALL, BitBoard.EMPTY));
-        assertNotNull(Castling.getKingSideCastleIfPossible(0b0100, true, BitBoard.ALL ^ (BitBoard.POSITION[4] | BitBoard.POSITION[7]), BitBoard.EMPTY));
+        assertNotNull(Castling.getKingSideCastleIfPossible(Castling.ALL_ALLOWED, true, Bitboard.ALL, Bitboard.EMPTY));
+        assertNotNull(Castling.getKingSideCastleIfPossible(0b0100, true, Bitboard.ALL ^ (Bitboard.INDEX[4] | Bitboard.INDEX[7]), Bitboard.EMPTY));
 
         // Limit
-        assertNotNull(Castling.getKingSideCastleIfPossible(0b0101, true, BitBoard.EMPTY ^ (BitBoard.POSITION[5] | BitBoard.POSITION[6]),
-                BitBoard.ALL ^ (BitBoard.POSITION[4] | BitBoard.POSITION[5] | BitBoard.POSITION[6])));
+        assertNotNull(Castling.getKingSideCastleIfPossible(0b0101, true, Bitboard.EMPTY ^ (Bitboard.INDEX[5] | Bitboard.INDEX[6]),
+                Bitboard.ALL ^ (Bitboard.INDEX[4] | Bitboard.INDEX[5] | Bitboard.INDEX[6])));
 
         // Not allowed due to occupancy
-        assertNull(Castling.getKingSideCastleIfPossible(Castling.ALL_ALLOWED, true, BitBoard.ALL ^ BitBoard.POSITION[5], BitBoard.EMPTY));
-        assertNull(Castling.getKingSideCastleIfPossible(Castling.ALL_ALLOWED, true, BitBoard.ALL ^ BitBoard.POSITION[6], BitBoard.EMPTY));
-        assertNull(Castling.getKingSideCastleIfPossible(Castling.ALL_ALLOWED, true, BitBoard.ALL ^ (BitBoard.POSITION[5] | BitBoard.POSITION[6]), BitBoard.EMPTY));
+        assertNull(Castling.getKingSideCastleIfPossible(Castling.ALL_ALLOWED, true, Bitboard.ALL ^ Bitboard.INDEX[5], Bitboard.EMPTY));
+        assertNull(Castling.getKingSideCastleIfPossible(Castling.ALL_ALLOWED, true, Bitboard.ALL ^ Bitboard.INDEX[6], Bitboard.EMPTY));
+        assertNull(Castling.getKingSideCastleIfPossible(Castling.ALL_ALLOWED, true, Bitboard.ALL ^ (Bitboard.INDEX[5] | Bitboard.INDEX[6]), Bitboard.EMPTY));
 
         // Not allowed due to check
-        assertNull(Castling.getKingSideCastleIfPossible(Castling.ALL_ALLOWED, true, BitBoard.ALL, BitBoard.POSITION[4]));
-        assertNull(Castling.getKingSideCastleIfPossible(Castling.ALL_ALLOWED, true, BitBoard.ALL, BitBoard.POSITION[5]));
-        assertNull(Castling.getKingSideCastleIfPossible(Castling.ALL_ALLOWED, true, BitBoard.ALL, BitBoard.POSITION[6]));
-        assertNull(Castling.getKingSideCastleIfPossible(Castling.ALL_ALLOWED, true, BitBoard.ALL, BitBoard.POSITION[6] | BitBoard.POSITION[4]));
+        assertNull(Castling.getKingSideCastleIfPossible(Castling.ALL_ALLOWED, true, Bitboard.ALL, Bitboard.INDEX[4]));
+        assertNull(Castling.getKingSideCastleIfPossible(Castling.ALL_ALLOWED, true, Bitboard.ALL, Bitboard.INDEX[5]));
+        assertNull(Castling.getKingSideCastleIfPossible(Castling.ALL_ALLOWED, true, Bitboard.ALL, Bitboard.INDEX[6]));
+        assertNull(Castling.getKingSideCastleIfPossible(Castling.ALL_ALLOWED, true, Bitboard.ALL, Bitboard.INDEX[6] | Bitboard.INDEX[4]));
 
         // Not allowed due to bitmap
-        assertNull(Castling.getKingSideCastleIfPossible(0, true, BitBoard.ALL, BitBoard.EMPTY));
-        assertNull(Castling.getKingSideCastleIfPossible(0b1011, true, BitBoard.ALL, BitBoard.EMPTY));
+        assertNull(Castling.getKingSideCastleIfPossible(0, true, Bitboard.ALL, Bitboard.EMPTY));
+        assertNull(Castling.getKingSideCastleIfPossible(0b1011, true, Bitboard.ALL, Bitboard.EMPTY));
     }
 
     @Test
     void getKingSideCastleIfPossible_black() {
         // Empty board
-        assertNotNull(Castling.getKingSideCastleIfPossible(Castling.ALL_ALLOWED, false, BitBoard.ALL, BitBoard.EMPTY));
-        assertNotNull(Castling.getKingSideCastleIfPossible(0b0001, false, BitBoard.ALL ^ (BitBoard.POSITION[60] | BitBoard.POSITION[63]), BitBoard.EMPTY));
+        assertNotNull(Castling.getKingSideCastleIfPossible(Castling.ALL_ALLOWED, false, Bitboard.ALL, Bitboard.EMPTY));
+        assertNotNull(Castling.getKingSideCastleIfPossible(0b0001, false, Bitboard.ALL ^ (Bitboard.INDEX[60] | Bitboard.INDEX[63]), Bitboard.EMPTY));
 
         // Limit
-        assertNotNull(Castling.getKingSideCastleIfPossible(0b0101, false, BitBoard.EMPTY ^ (BitBoard.POSITION[61] | BitBoard.POSITION[62]),
-                BitBoard.ALL ^ (BitBoard.POSITION[60] | BitBoard.POSITION[61] | BitBoard.POSITION[62])));
+        assertNotNull(Castling.getKingSideCastleIfPossible(0b0101, false, Bitboard.EMPTY ^ (Bitboard.INDEX[61] | Bitboard.INDEX[62]),
+                Bitboard.ALL ^ (Bitboard.INDEX[60] | Bitboard.INDEX[61] | Bitboard.INDEX[62])));
 
         // Not allowed due to occupancy
-        assertNull(Castling.getKingSideCastleIfPossible(Castling.ALL_ALLOWED, false, BitBoard.ALL ^ BitBoard.POSITION[61], BitBoard.EMPTY));
-        assertNull(Castling.getKingSideCastleIfPossible(Castling.ALL_ALLOWED, false, BitBoard.ALL ^ BitBoard.POSITION[62], BitBoard.EMPTY));
-        assertNull(Castling.getKingSideCastleIfPossible(Castling.ALL_ALLOWED, false, BitBoard.ALL ^ (BitBoard.POSITION[61] | BitBoard.POSITION[62]), BitBoard.EMPTY));
+        assertNull(Castling.getKingSideCastleIfPossible(Castling.ALL_ALLOWED, false, Bitboard.ALL ^ Bitboard.INDEX[61], Bitboard.EMPTY));
+        assertNull(Castling.getKingSideCastleIfPossible(Castling.ALL_ALLOWED, false, Bitboard.ALL ^ Bitboard.INDEX[62], Bitboard.EMPTY));
+        assertNull(Castling.getKingSideCastleIfPossible(Castling.ALL_ALLOWED, false, Bitboard.ALL ^ (Bitboard.INDEX[61] | Bitboard.INDEX[62]), Bitboard.EMPTY));
 
         // Not allowed due to check
-        assertNull(Castling.getKingSideCastleIfPossible(Castling.ALL_ALLOWED, false, BitBoard.ALL, BitBoard.POSITION[60]));
-        assertNull(Castling.getKingSideCastleIfPossible(Castling.ALL_ALLOWED, false, BitBoard.ALL, BitBoard.POSITION[61]));
-        assertNull(Castling.getKingSideCastleIfPossible(Castling.ALL_ALLOWED, false, BitBoard.ALL, BitBoard.POSITION[62]));
-        assertNull(Castling.getKingSideCastleIfPossible(Castling.ALL_ALLOWED, false, BitBoard.ALL, BitBoard.POSITION[60] | BitBoard.POSITION[62]));
+        assertNull(Castling.getKingSideCastleIfPossible(Castling.ALL_ALLOWED, false, Bitboard.ALL, Bitboard.INDEX[60]));
+        assertNull(Castling.getKingSideCastleIfPossible(Castling.ALL_ALLOWED, false, Bitboard.ALL, Bitboard.INDEX[61]));
+        assertNull(Castling.getKingSideCastleIfPossible(Castling.ALL_ALLOWED, false, Bitboard.ALL, Bitboard.INDEX[62]));
+        assertNull(Castling.getKingSideCastleIfPossible(Castling.ALL_ALLOWED, false, Bitboard.ALL, Bitboard.INDEX[60] | Bitboard.INDEX[62]));
 
         // Not allowed due to bitmap
-        assertNull(Castling.getKingSideCastleIfPossible(0, false, BitBoard.ALL, BitBoard.EMPTY));
-        assertNull(Castling.getKingSideCastleIfPossible(0b1110, false, BitBoard.ALL, BitBoard.EMPTY));
+        assertNull(Castling.getKingSideCastleIfPossible(0, false, Bitboard.ALL, Bitboard.EMPTY));
+        assertNull(Castling.getKingSideCastleIfPossible(0b1110, false, Bitboard.ALL, Bitboard.EMPTY));
     }
 
     @Test
     void getQueenSideCastleIfPossible_white() {
         // Empty board
-        assertNotNull(Castling.getQueenSideCastleIfPossible(Castling.ALL_ALLOWED, true, BitBoard.ALL, BitBoard.EMPTY));
-        assertNotNull(Castling.getQueenSideCastleIfPossible(0b1000, true, BitBoard.ALL ^ (BitBoard.POSITION[4] | BitBoard.POSITION[0]), BitBoard.EMPTY));
+        assertNotNull(Castling.getQueenSideCastleIfPossible(Castling.ALL_ALLOWED, true, Bitboard.ALL, Bitboard.EMPTY));
+        assertNotNull(Castling.getQueenSideCastleIfPossible(0b1000, true, Bitboard.ALL ^ (Bitboard.INDEX[4] | Bitboard.INDEX[0]), Bitboard.EMPTY));
 
         // Limit
-        assertNotNull(Castling.getQueenSideCastleIfPossible(0b1001, true, BitBoard.EMPTY ^ (BitBoard.POSITION[1] | BitBoard.POSITION[2] | BitBoard.POSITION[3]),
-                BitBoard.ALL ^ (BitBoard.POSITION[2] | BitBoard.POSITION[3] | BitBoard.POSITION[4])));
+        assertNotNull(Castling.getQueenSideCastleIfPossible(0b1001, true, Bitboard.EMPTY ^ (Bitboard.INDEX[1] | Bitboard.INDEX[2] | Bitboard.INDEX[3]),
+                Bitboard.ALL ^ (Bitboard.INDEX[2] | Bitboard.INDEX[3] | Bitboard.INDEX[4])));
 
         // Not allowed due to occupancy
-        assertNull(Castling.getQueenSideCastleIfPossible(Castling.ALL_ALLOWED, true, BitBoard.ALL ^ BitBoard.POSITION[1], BitBoard.EMPTY));
-        assertNull(Castling.getQueenSideCastleIfPossible(Castling.ALL_ALLOWED, true, BitBoard.ALL ^ BitBoard.POSITION[2], BitBoard.EMPTY));
-        assertNull(Castling.getQueenSideCastleIfPossible(Castling.ALL_ALLOWED, true, BitBoard.ALL ^ BitBoard.POSITION[3], BitBoard.EMPTY));
-        assertNull(Castling.getQueenSideCastleIfPossible(Castling.ALL_ALLOWED, true, BitBoard.ALL ^ (BitBoard.POSITION[1] | BitBoard.POSITION[3]), BitBoard.EMPTY));
+        assertNull(Castling.getQueenSideCastleIfPossible(Castling.ALL_ALLOWED, true, Bitboard.ALL ^ Bitboard.INDEX[1], Bitboard.EMPTY));
+        assertNull(Castling.getQueenSideCastleIfPossible(Castling.ALL_ALLOWED, true, Bitboard.ALL ^ Bitboard.INDEX[2], Bitboard.EMPTY));
+        assertNull(Castling.getQueenSideCastleIfPossible(Castling.ALL_ALLOWED, true, Bitboard.ALL ^ Bitboard.INDEX[3], Bitboard.EMPTY));
+        assertNull(Castling.getQueenSideCastleIfPossible(Castling.ALL_ALLOWED, true, Bitboard.ALL ^ (Bitboard.INDEX[1] | Bitboard.INDEX[3]), Bitboard.EMPTY));
 
         // Not allowed due to check
-        assertNull(Castling.getQueenSideCastleIfPossible(Castling.ALL_ALLOWED, true, BitBoard.ALL, BitBoard.POSITION[2]));
-        assertNull(Castling.getQueenSideCastleIfPossible(Castling.ALL_ALLOWED, true, BitBoard.ALL, BitBoard.POSITION[3]));
-        assertNull(Castling.getQueenSideCastleIfPossible(Castling.ALL_ALLOWED, true, BitBoard.ALL, BitBoard.POSITION[4]));
-        assertNull(Castling.getQueenSideCastleIfPossible(Castling.ALL_ALLOWED, true, BitBoard.ALL, BitBoard.POSITION[2] | BitBoard.POSITION[4]));
+        assertNull(Castling.getQueenSideCastleIfPossible(Castling.ALL_ALLOWED, true, Bitboard.ALL, Bitboard.INDEX[2]));
+        assertNull(Castling.getQueenSideCastleIfPossible(Castling.ALL_ALLOWED, true, Bitboard.ALL, Bitboard.INDEX[3]));
+        assertNull(Castling.getQueenSideCastleIfPossible(Castling.ALL_ALLOWED, true, Bitboard.ALL, Bitboard.INDEX[4]));
+        assertNull(Castling.getQueenSideCastleIfPossible(Castling.ALL_ALLOWED, true, Bitboard.ALL, Bitboard.INDEX[2] | Bitboard.INDEX[4]));
 
         // Not allowed due to bitmap
-        assertNull(Castling.getQueenSideCastleIfPossible(0, true, BitBoard.ALL, BitBoard.EMPTY));
-        assertNull(Castling.getQueenSideCastleIfPossible(0b0111, true, BitBoard.ALL, BitBoard.EMPTY));
+        assertNull(Castling.getQueenSideCastleIfPossible(0, true, Bitboard.ALL, Bitboard.EMPTY));
+        assertNull(Castling.getQueenSideCastleIfPossible(0b0111, true, Bitboard.ALL, Bitboard.EMPTY));
     }
 
     @Test
     void getQueenSideCastleIfPossible_black() {
         // Empty board
-        assertNotNull(Castling.getQueenSideCastleIfPossible(Castling.ALL_ALLOWED, false, BitBoard.ALL, BitBoard.EMPTY));
-        assertNotNull(Castling.getQueenSideCastleIfPossible(0b0010, false, BitBoard.ALL ^ (BitBoard.POSITION[60] | BitBoard.POSITION[56]), BitBoard.EMPTY));
+        assertNotNull(Castling.getQueenSideCastleIfPossible(Castling.ALL_ALLOWED, false, Bitboard.ALL, Bitboard.EMPTY));
+        assertNotNull(Castling.getQueenSideCastleIfPossible(0b0010, false, Bitboard.ALL ^ (Bitboard.INDEX[60] | Bitboard.INDEX[56]), Bitboard.EMPTY));
 
         // Limit
-        assertNotNull(Castling.getQueenSideCastleIfPossible(0b0110, false, BitBoard.EMPTY ^ (BitBoard.POSITION[57] | BitBoard.POSITION[58] | BitBoard.POSITION[59]),
-                BitBoard.ALL ^ (BitBoard.POSITION[58] | BitBoard.POSITION[59] | BitBoard.POSITION[60])));
+        assertNotNull(Castling.getQueenSideCastleIfPossible(0b0110, false, Bitboard.EMPTY ^ (Bitboard.INDEX[57] | Bitboard.INDEX[58] | Bitboard.INDEX[59]),
+                Bitboard.ALL ^ (Bitboard.INDEX[58] | Bitboard.INDEX[59] | Bitboard.INDEX[60])));
 
         // Not allowed due to occupancy
-        assertNull(Castling.getQueenSideCastleIfPossible(Castling.ALL_ALLOWED, false, BitBoard.ALL ^ BitBoard.POSITION[57], BitBoard.EMPTY));
-        assertNull(Castling.getQueenSideCastleIfPossible(Castling.ALL_ALLOWED, false, BitBoard.ALL ^ BitBoard.POSITION[58], BitBoard.EMPTY));
-        assertNull(Castling.getQueenSideCastleIfPossible(Castling.ALL_ALLOWED, false, BitBoard.ALL ^ BitBoard.POSITION[59], BitBoard.EMPTY));
-        assertNull(Castling.getQueenSideCastleIfPossible(Castling.ALL_ALLOWED, false, BitBoard.ALL ^ (BitBoard.POSITION[57] | BitBoard.POSITION[59]), BitBoard.EMPTY));
+        assertNull(Castling.getQueenSideCastleIfPossible(Castling.ALL_ALLOWED, false, Bitboard.ALL ^ Bitboard.INDEX[57], Bitboard.EMPTY));
+        assertNull(Castling.getQueenSideCastleIfPossible(Castling.ALL_ALLOWED, false, Bitboard.ALL ^ Bitboard.INDEX[58], Bitboard.EMPTY));
+        assertNull(Castling.getQueenSideCastleIfPossible(Castling.ALL_ALLOWED, false, Bitboard.ALL ^ Bitboard.INDEX[59], Bitboard.EMPTY));
+        assertNull(Castling.getQueenSideCastleIfPossible(Castling.ALL_ALLOWED, false, Bitboard.ALL ^ (Bitboard.INDEX[57] | Bitboard.INDEX[59]), Bitboard.EMPTY));
 
         // Not allowed due to check
-        assertNull(Castling.getQueenSideCastleIfPossible(Castling.ALL_ALLOWED, false, BitBoard.ALL, BitBoard.POSITION[58]));
-        assertNull(Castling.getQueenSideCastleIfPossible(Castling.ALL_ALLOWED, false, BitBoard.ALL, BitBoard.POSITION[59]));
-        assertNull(Castling.getQueenSideCastleIfPossible(Castling.ALL_ALLOWED, false, BitBoard.ALL, BitBoard.POSITION[60]));
-        assertNull(Castling.getQueenSideCastleIfPossible(Castling.ALL_ALLOWED, false, BitBoard.ALL, BitBoard.POSITION[58] | BitBoard.POSITION[60]));
+        assertNull(Castling.getQueenSideCastleIfPossible(Castling.ALL_ALLOWED, false, Bitboard.ALL, Bitboard.INDEX[58]));
+        assertNull(Castling.getQueenSideCastleIfPossible(Castling.ALL_ALLOWED, false, Bitboard.ALL, Bitboard.INDEX[59]));
+        assertNull(Castling.getQueenSideCastleIfPossible(Castling.ALL_ALLOWED, false, Bitboard.ALL, Bitboard.INDEX[60]));
+        assertNull(Castling.getQueenSideCastleIfPossible(Castling.ALL_ALLOWED, false, Bitboard.ALL, Bitboard.INDEX[58] | Bitboard.INDEX[60]));
 
         // Not allowed due to bitmap
-        assertNull(Castling.getQueenSideCastleIfPossible(0, false, BitBoard.ALL, BitBoard.EMPTY));
-        assertNull(Castling.getQueenSideCastleIfPossible(0b1101, false, BitBoard.ALL, BitBoard.EMPTY));
+        assertNull(Castling.getQueenSideCastleIfPossible(0, false, Bitboard.ALL, Bitboard.EMPTY));
+        assertNull(Castling.getQueenSideCastleIfPossible(0b1101, false, Bitboard.ALL, Bitboard.EMPTY));
     }
 
     @Test

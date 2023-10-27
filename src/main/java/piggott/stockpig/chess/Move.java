@@ -1,8 +1,7 @@
 package piggott.stockpig.chess;
 
 /**
- * Represents a chess move
- * Storing all the data necessary to both make a move and undo it
+ * Provides an object to store chess move data.
  */
 public class Move {
 
@@ -16,14 +15,14 @@ public class Move {
     private final long castleRookMove;
 
     /**
-     * @param from bit on the board, primary piece is moving from
-     * @param to bit on the board, primary piece is moving to
+     * @param from bitboard, primary piece is moving from
+     * @param to bitboard, primary piece is moving to
      * @param movingPiece primary moving piece
      * @param capturedPiece piece that has been captured
      * @param promotedToPiece piece that a pawn is being promoted to
-     * @param capturedEnPassantPawn pawn captured in an en passant move
-     * @param enPassantTarget if the move is a double pawn push, this is the square that can now be the target of an en passant
-     * @param castleRookMove for a castle move this represents the rook move
+     * @param capturedEnPassantPawn bitboard, pawn captured in an en passant move
+     * @param enPassantTarget bitboard, if the move is a double pawn push, this is the square that can now be the target of an en passant
+     * @param castleRookMove bitboard of rook movement, for castle moves
      */
     private Move(final long from, final long to, final int movingPiece, final int capturedPiece, final int promotedToPiece, final long capturedEnPassantPawn, final long enPassantTarget, final long castleRookMove) {
         this.from = from;
@@ -36,32 +35,32 @@ public class Move {
         this.castleRookMove = castleRookMove;
     }
 
-    public static Move castle(final long from, final long to, final int movingPiece, final long castleRookMove) {
-        return new Move(from, to, movingPiece, Piece.EMPTY, Piece.EMPTY, BitBoard.EMPTY, BitBoard.EMPTY, castleRookMove);
+    static Move castle(final long from, final long to, final int movingPiece, final long castleRookMove) {
+        return new Move(from, to, movingPiece, Piece.EMPTY, Piece.EMPTY, Bitboard.EMPTY, Bitboard.EMPTY, castleRookMove);
     }
 
-    public static Move doublePush(final long from, final long to, final int movingPiece, final long enPassantTarget) {
-        return new Move(from, to, movingPiece, Piece.EMPTY, Piece.EMPTY, BitBoard.EMPTY, enPassantTarget, BitBoard.EMPTY);
+    static Move doublePush(final long from, final long to, final int movingPiece, final long enPassantTarget) {
+        return new Move(from, to, movingPiece, Piece.EMPTY, Piece.EMPTY, Bitboard.EMPTY, enPassantTarget, Bitboard.EMPTY);
     }
 
-    public static Move enPassantCapture(final long from, final long to, final int movingPiece, final int capturedPiece, final long capturedEnPassantPawn) {
-        return new Move(from, to, movingPiece, capturedPiece, Piece.EMPTY, capturedEnPassantPawn, BitBoard.EMPTY, BitBoard.EMPTY);
+    static Move enPassantCapture(final long from, final long to, final int movingPiece, final int capturedPiece, final long capturedEnPassantPawn) {
+        return new Move(from, to, movingPiece, capturedPiece, Piece.EMPTY, capturedEnPassantPawn, Bitboard.EMPTY, Bitboard.EMPTY);
     }
 
-    public static Move pawnPromotionWithCapture(final long from, final long to, final int movingPiece, final int capturedPiece, final int promotedToPiece) {
-        return new Move(from, to, movingPiece, capturedPiece, promotedToPiece, BitBoard.EMPTY, BitBoard.EMPTY, BitBoard.EMPTY);
+    static Move pawnPromotionWithCapture(final long from, final long to, final int movingPiece, final int capturedPiece, final int promotedToPiece) {
+        return new Move(from, to, movingPiece, capturedPiece, promotedToPiece, Bitboard.EMPTY, Bitboard.EMPTY, Bitboard.EMPTY);
     }
 
-    public static Move pawnPromotion(final long from, final long to, final int movingPiece, final int promotedToPiece) {
-        return new Move(from, to, movingPiece, Piece.EMPTY, promotedToPiece, BitBoard.EMPTY, BitBoard.EMPTY, BitBoard.EMPTY);
+    static Move pawnPromotion(final long from, final long to, final int movingPiece, final int promotedToPiece) {
+        return new Move(from, to, movingPiece, Piece.EMPTY, promotedToPiece, Bitboard.EMPTY, Bitboard.EMPTY, Bitboard.EMPTY);
     }
 
-    public static Move basicCapture(final long from, final long to, final int movingPiece, final int capturedPiece) {
-        return new Move(from, to, movingPiece, capturedPiece, Piece.EMPTY, BitBoard.EMPTY, BitBoard.EMPTY, BitBoard.EMPTY);
+    static Move basicCapture(final long from, final long to, final int movingPiece, final int capturedPiece) {
+        return new Move(from, to, movingPiece, capturedPiece, Piece.EMPTY, Bitboard.EMPTY, Bitboard.EMPTY, Bitboard.EMPTY);
     }
 
-    public static Move basicMove(final long from, final long to, final int movingPiece) {
-        return new Move(from, to, movingPiece, Piece.EMPTY, Piece.EMPTY, BitBoard.EMPTY, BitBoard.EMPTY, BitBoard.EMPTY);
+    static Move basicMove(final long from, final long to, final int movingPiece) {
+        return new Move(from, to, movingPiece, Piece.EMPTY, Piece.EMPTY, Bitboard.EMPTY, Bitboard.EMPTY, Bitboard.EMPTY);
     }
 
     public long getFrom() {
@@ -93,7 +92,7 @@ public class Move {
     }
 
     public boolean isEnPassant() {
-        return capturedEnPassantPawn != BitBoard.EMPTY;
+        return capturedEnPassantPawn != Bitboard.EMPTY;
     }
 
     public long getCapturedEnPassantPawn() {
@@ -101,7 +100,7 @@ public class Move {
     }
 
     public boolean isDoublePawnPush() {
-        return enPassantTarget != BitBoard.EMPTY;
+        return enPassantTarget != Bitboard.EMPTY;
     }
 
     public long getEnPassantTarget() {
@@ -109,7 +108,7 @@ public class Move {
     }
 
     public boolean isCastle() {
-        return castleRookMove != BitBoard.EMPTY;
+        return castleRookMove != Bitboard.EMPTY;
     }
 
     public long getCastleRookMove() {
@@ -126,7 +125,7 @@ public class Move {
 
     @Override
     public String toString() {
-        return AlgebraNotation.fromBit(from) + AlgebraNotation.fromBit(to) + (isPromotion() ? Piece.toChar(promotedToPiece) : "");
+        return AlgebraNotation.fromBitboard(from) + AlgebraNotation.fromBitboard(to) + (isPromotion() ? Piece.toChar(promotedToPiece) : "");
     }
 
     @Override

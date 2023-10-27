@@ -1,43 +1,65 @@
 package piggott.stockpig.chess;
 
 /**
- * Class for converting to and from algebra notation (a1, h8, etc)
+ * Provides methods for converting to and from algebra notation (a1 ... h8).
+ *
+ * @see Bitboard
  */
 public class AlgebraNotation {
 
     /**
-     * Convert given algebra notation to bit board.
+     * Parse algebra notation into 0-63 square index.
      *
-     * @param algebra algebra representation of chess square [a-h][1-8]
-     * @return bit board with single bit flipped
+     * @param algebra algebra notation
+     * @return square index, -1 if parse error
      */
-    public static long toBit(final String algebra) {
-        if ("-".equals(algebra)) return 0L;
-        final int file = indexOfFile(algebra.charAt(0));
-        final int rank = Character.digit(algebra.charAt(1), 10) - 1;
-        return BitBoard.POSITION[(rank * 8) + file];
+    public static int toIndex(final String algebra) {
+        try {
+            final int file = ((int) algebra.charAt(0)) - 97;
+            final int rank = Character.digit(algebra.charAt(1), 10) - 1;
+            return rank * 8 + file;
+        } catch (StringIndexOutOfBoundsException | NullPointerException e) {
+            return -1;
+        }
     }
 
     /**
-     * Convert the given bit board to algebra notation.
-     * If a bit board has more than one bit flipped, the least significant bit will be converted.
+     * Get the algebra notation for a 0-63 square index.
      *
-     * @param bit bit board with only one bit flipped
-     * @return algebra notation [a-h][1-8]
+     * @param index square index
+     * @return algebra notation
      */
-    public static String fromBit(final long bit) {
-        if (bit == 0L) return "-";
+    public static String fromIndex(final int index) {
+        if (index == -1) return "-";
 
-        final int position = Long.numberOfTrailingZeros(bit);
-        return charFromFile(position % 8) + "" + ((position / 8)+ 1);
+        final char file = ((char) (index % 8 + 97)) ;
+        final int rank = index / 8 + 1;
+        return file + "" + rank;
     }
 
-    private static int indexOfFile(final char file) {
-        return ((int) file - 97);
+    /**
+     * Parse algebra notation into a bitboard.
+     *
+     * @param algebra algebra notation
+     * @return bitboard
+     */
+    public static long toBitboard(final String algebra) {
+        final int index = toIndex(algebra);
+        return index == -1 ? Bitboard.EMPTY : Bitboard.INDEX[index];
     }
 
-    private static char charFromFile(final int file) {
-        return (char) (file + 97);
+    /**
+     * Get the algebra notation for a bitboard.
+     * If a bitboard has more than one bit flipped, the least significant 1 bit will be converted.
+     *
+     * @param bit bitboard
+     * @return algebra notation
+     */
+    public static String fromBitboard(final long bit) {
+        if (bit == Bitboard.EMPTY) return "-";
+
+        final int index = Long.numberOfTrailingZeros(bit);
+        return fromIndex(index);
     }
 
 }

@@ -40,7 +40,7 @@ public class MovePathEnumerationTest {
         
         final long start = System.currentTimeMillis();
         
-        assertEquals(expectedPositions, Game.fromFen(fen).movePathEnumerationPerft(depth));
+        assertEquals(expectedPositions, Fen.toGame(fen).movePathEnumerationPerft(depth));
         
         final long end = System.currentTimeMillis();
         final long elapsed = end-start;
