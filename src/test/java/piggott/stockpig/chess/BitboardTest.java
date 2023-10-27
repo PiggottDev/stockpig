@@ -167,7 +167,7 @@ class BitboardTest {
     }
 
     @Test
-    void string() {
+    void debugString() {
         assertEquals(
                 "+---+---+---+---+---+---+---+---+\n" +
                 "|   |   |   |   |   |   |   |   |\n" +

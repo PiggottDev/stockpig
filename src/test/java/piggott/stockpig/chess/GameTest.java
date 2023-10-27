@@ -74,7 +74,7 @@ class GameTest {
     }
 
     @Test
-    void testToString() {
+    void debugString() {
         final Game game = Fen.toGame("k5qr/8/8/8/8/8/8/7K w k - 0 1");
         assertEquals("+---+---+---+---+---+---+---+---+\n" +
                 "|   |   |   |   |   |   |   |   |\n" +
@@ -116,7 +116,7 @@ class GameTest {
                 "\t\tCastles: k\n" +
                 "\t\tEnPassant Target: -\n" +
                 "\t\tTurns Since Push/Cap: 0\n" +
-                "\t\tTurn Number: 1", game.toString()
+                "\t\tTurn Number: 1", game.debugString()
         );
     }
 }

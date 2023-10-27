@@ -3,6 +3,8 @@ package piggott.stockpig.chess;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class PieceTest {
 
@@ -75,23 +77,23 @@ class PieceTest {
 
     @Test
     void isWhite() {
-        assertEquals(false, Piece.isWhite(Piece.BLACK));
-        assertEquals(false, Piece.isWhite(Piece.BLACK | Piece.KING));
-        assertEquals(false, Piece.isWhite(Piece.BLACK | Piece.PAWN));
-        assertEquals(false, Piece.isWhite( Piece.BLACK | Piece.KNIGHT));
-        assertEquals(false, Piece.isWhite( Piece.BLACK | Piece.BISHOP));
-        assertEquals(false, Piece.isWhite( Piece.BLACK | Piece.ROOK));
-        assertEquals(false, Piece.isWhite( Piece.BLACK | Piece.QUEEN));
+        assertFalse(Piece.isWhite(Piece.BLACK));
+        assertFalse(Piece.isWhite(Piece.BLACK | Piece.KING));
+        assertFalse(Piece.isWhite(Piece.BLACK | Piece.PAWN));
+        assertFalse(Piece.isWhite( Piece.BLACK | Piece.KNIGHT));
+        assertFalse(Piece.isWhite( Piece.BLACK | Piece.BISHOP));
+        assertFalse(Piece.isWhite( Piece.BLACK | Piece.ROOK));
+        assertFalse(Piece.isWhite( Piece.BLACK | Piece.QUEEN));
 
-        assertEquals(false, Piece.isWhite( Piece.UNOCCUPIED));
+        assertFalse(Piece.isWhite( Piece.UNOCCUPIED));
 
-        assertEquals(true, Piece.isWhite(Piece.WHITE));
-        assertEquals(true, Piece.isWhite(Piece.WHITE | Piece.KING));
-        assertEquals(true, Piece.isWhite(Piece.WHITE | Piece.PAWN));
-        assertEquals(true, Piece.isWhite( Piece.WHITE | Piece.KNIGHT));
-        assertEquals(true, Piece.isWhite( Piece.WHITE | Piece.BISHOP));
-        assertEquals(true, Piece.isWhite( Piece.WHITE | Piece.ROOK));
-        assertEquals(true, Piece.isWhite( Piece.WHITE | Piece.QUEEN));
+        assertTrue(Piece.isWhite(Piece.WHITE));
+        assertTrue(Piece.isWhite(Piece.WHITE | Piece.KING));
+        assertTrue(Piece.isWhite(Piece.WHITE | Piece.PAWN));
+        assertTrue(Piece.isWhite( Piece.WHITE | Piece.KNIGHT));
+        assertTrue(Piece.isWhite( Piece.WHITE | Piece.BISHOP));
+        assertTrue(Piece.isWhite( Piece.WHITE | Piece.ROOK));
+        assertTrue(Piece.isWhite( Piece.WHITE | Piece.QUEEN));
     }
 
     @Test
@@ -117,147 +119,147 @@ class PieceTest {
 
     @Test
     void isSlider() {
-        assertEquals(false, Piece.isSlider(Piece.BLACK));
-        assertEquals(false, Piece.isSlider(Piece.BLACK | Piece.KING));
-        assertEquals(false, Piece.isSlider(Piece.BLACK | Piece.PAWN));
-        assertEquals(false, Piece.isSlider( Piece.BLACK | Piece.KNIGHT));
-        assertEquals(true, Piece.isSlider( Piece.BLACK | Piece.BISHOP));
-        assertEquals(true, Piece.isSlider( Piece.BLACK | Piece.ROOK));
-        assertEquals(true, Piece.isSlider( Piece.BLACK | Piece.QUEEN));
+        assertFalse(Piece.isSlider(Piece.BLACK));
+        assertFalse(Piece.isSlider(Piece.BLACK | Piece.KING));
+        assertFalse(Piece.isSlider(Piece.BLACK | Piece.PAWN));
+        assertFalse(Piece.isSlider( Piece.BLACK | Piece.KNIGHT));
+        assertTrue(Piece.isSlider( Piece.BLACK | Piece.BISHOP));
+        assertTrue(Piece.isSlider( Piece.BLACK | Piece.ROOK));
+        assertTrue(Piece.isSlider( Piece.BLACK | Piece.QUEEN));
 
-        assertEquals(false, Piece.isSlider(Piece.WHITE));
-        assertEquals(false, Piece.isSlider(Piece.WHITE | Piece.KING));
-        assertEquals(false, Piece.isSlider(Piece.WHITE | Piece.PAWN));
-        assertEquals(false, Piece.isSlider( Piece.WHITE | Piece.KNIGHT));
-        assertEquals(true, Piece.isSlider( Piece.WHITE | Piece.BISHOP));
-        assertEquals(true, Piece.isSlider( Piece.WHITE | Piece.ROOK));
-        assertEquals(true, Piece.isSlider( Piece.WHITE | Piece.QUEEN));
+        assertFalse(Piece.isSlider(Piece.WHITE));
+        assertFalse(Piece.isSlider(Piece.WHITE | Piece.KING));
+        assertFalse(Piece.isSlider(Piece.WHITE | Piece.PAWN));
+        assertFalse(Piece.isSlider( Piece.WHITE | Piece.KNIGHT));
+        assertTrue(Piece.isSlider( Piece.WHITE | Piece.BISHOP));
+        assertTrue(Piece.isSlider( Piece.WHITE | Piece.ROOK));
+        assertTrue(Piece.isSlider( Piece.WHITE | Piece.QUEEN));
     }
 
     @Test
     void isKing() {
-        assertEquals(false, Piece.isKing(Piece.BLACK));
-        assertEquals(true, Piece.isKing(Piece.BLACK | Piece.KING));
-        assertEquals(false, Piece.isKing(Piece.BLACK | Piece.PAWN));
-        assertEquals(false, Piece.isKing( Piece.BLACK | Piece.KNIGHT));
-        assertEquals(false, Piece.isKing( Piece.BLACK | Piece.BISHOP));
-        assertEquals(false, Piece.isKing( Piece.BLACK | Piece.ROOK));
-        assertEquals(false, Piece.isKing( Piece.BLACK | Piece.QUEEN));
+        assertFalse(Piece.isKing(Piece.BLACK));
+        assertTrue(Piece.isKing(Piece.BLACK | Piece.KING));
+        assertFalse(Piece.isKing(Piece.BLACK | Piece.PAWN));
+        assertFalse(Piece.isKing( Piece.BLACK | Piece.KNIGHT));
+        assertFalse(Piece.isKing( Piece.BLACK | Piece.BISHOP));
+        assertFalse(Piece.isKing( Piece.BLACK | Piece.ROOK));
+        assertFalse(Piece.isKing( Piece.BLACK | Piece.QUEEN));
 
-        assertEquals(false, Piece.isKing( Piece.UNOCCUPIED));
+        assertFalse(Piece.isKing( Piece.UNOCCUPIED));
 
-        assertEquals(false, Piece.isKing(Piece.WHITE));
-        assertEquals(true, Piece.isKing(Piece.WHITE | Piece.KING));
-        assertEquals(false, Piece.isKing(Piece.WHITE | Piece.PAWN));
-        assertEquals(false, Piece.isKing( Piece.WHITE | Piece.KNIGHT));
-        assertEquals(false, Piece.isKing( Piece.WHITE | Piece.BISHOP));
-        assertEquals(false, Piece.isKing( Piece.WHITE | Piece.ROOK));
-        assertEquals(false, Piece.isKing( Piece.WHITE | Piece.QUEEN));
+        assertFalse(Piece.isKing(Piece.WHITE));
+        assertTrue(Piece.isKing(Piece.WHITE | Piece.KING));
+        assertFalse(Piece.isKing(Piece.WHITE | Piece.PAWN));
+        assertFalse(Piece.isKing( Piece.WHITE | Piece.KNIGHT));
+        assertFalse(Piece.isKing( Piece.WHITE | Piece.BISHOP));
+        assertFalse(Piece.isKing( Piece.WHITE | Piece.ROOK));
+        assertFalse(Piece.isKing( Piece.WHITE | Piece.QUEEN));
     }
 
     @Test
     void isPawn() {
-        assertEquals(false, Piece.isPawn(Piece.BLACK));
-        assertEquals(false, Piece.isPawn(Piece.BLACK | Piece.KING));
-        assertEquals(true, Piece.isPawn(Piece.BLACK | Piece.PAWN));
-        assertEquals(false, Piece.isPawn( Piece.BLACK | Piece.KNIGHT));
-        assertEquals(false, Piece.isPawn( Piece.BLACK | Piece.BISHOP));
-        assertEquals(false, Piece.isPawn( Piece.BLACK | Piece.ROOK));
-        assertEquals(false, Piece.isPawn( Piece.BLACK | Piece.QUEEN));
+        assertFalse(Piece.isPawn(Piece.BLACK));
+        assertFalse(Piece.isPawn(Piece.BLACK | Piece.KING));
+        assertTrue(Piece.isPawn(Piece.BLACK | Piece.PAWN));
+        assertFalse(Piece.isPawn( Piece.BLACK | Piece.KNIGHT));
+        assertFalse(Piece.isPawn( Piece.BLACK | Piece.BISHOP));
+        assertFalse(Piece.isPawn( Piece.BLACK | Piece.ROOK));
+        assertFalse(Piece.isPawn( Piece.BLACK | Piece.QUEEN));
 
-        assertEquals(false, Piece.isPawn( Piece.UNOCCUPIED));
+        assertFalse(Piece.isPawn( Piece.UNOCCUPIED));
 
-        assertEquals(false, Piece.isPawn(Piece.WHITE));
-        assertEquals(false, Piece.isPawn(Piece.WHITE | Piece.KING));
-        assertEquals(true, Piece.isPawn(Piece.WHITE | Piece.PAWN));
-        assertEquals(false, Piece.isPawn( Piece.WHITE | Piece.KNIGHT));
-        assertEquals(false, Piece.isPawn( Piece.WHITE | Piece.BISHOP));
-        assertEquals(false, Piece.isPawn( Piece.WHITE | Piece.ROOK));
-        assertEquals(false, Piece.isPawn( Piece.WHITE | Piece.QUEEN));
+        assertFalse(Piece.isPawn(Piece.WHITE));
+        assertFalse(Piece.isPawn(Piece.WHITE | Piece.KING));
+        assertTrue(Piece.isPawn(Piece.WHITE | Piece.PAWN));
+        assertFalse(Piece.isPawn( Piece.WHITE | Piece.KNIGHT));
+        assertFalse(Piece.isPawn( Piece.WHITE | Piece.BISHOP));
+        assertFalse(Piece.isPawn( Piece.WHITE | Piece.ROOK));
+        assertFalse(Piece.isPawn( Piece.WHITE | Piece.QUEEN));
     }
 
     @Test
     void isKnight() {
-        assertEquals(false, Piece.isKnight(Piece.BLACK));
-        assertEquals(false, Piece.isKnight(Piece.BLACK | Piece.KING));
-        assertEquals(false, Piece.isKnight(Piece.BLACK | Piece.PAWN));
-        assertEquals(true, Piece.isKnight( Piece.BLACK | Piece.KNIGHT));
-        assertEquals(false, Piece.isKnight( Piece.BLACK | Piece.BISHOP));
-        assertEquals(false, Piece.isKnight( Piece.BLACK | Piece.ROOK));
-        assertEquals(false, Piece.isKnight( Piece.BLACK | Piece.QUEEN));
+        assertFalse(Piece.isKnight(Piece.BLACK));
+        assertFalse(Piece.isKnight(Piece.BLACK | Piece.KING));
+        assertFalse(Piece.isKnight(Piece.BLACK | Piece.PAWN));
+        assertTrue(Piece.isKnight( Piece.BLACK | Piece.KNIGHT));
+        assertFalse(Piece.isKnight( Piece.BLACK | Piece.BISHOP));
+        assertFalse(Piece.isKnight( Piece.BLACK | Piece.ROOK));
+        assertFalse(Piece.isKnight( Piece.BLACK | Piece.QUEEN));
 
-        assertEquals(false, Piece.isKnight( Piece.UNOCCUPIED));
+        assertFalse(Piece.isKnight( Piece.UNOCCUPIED));
 
-        assertEquals(false, Piece.isKnight(Piece.WHITE));
-        assertEquals(false, Piece.isKnight(Piece.WHITE | Piece.KING));
-        assertEquals(false, Piece.isKnight(Piece.WHITE | Piece.PAWN));
-        assertEquals(true, Piece.isKnight( Piece.WHITE | Piece.KNIGHT));
-        assertEquals(false, Piece.isKnight( Piece.WHITE | Piece.BISHOP));
-        assertEquals(false, Piece.isKnight( Piece.WHITE | Piece.ROOK));
-        assertEquals(false, Piece.isKnight( Piece.WHITE | Piece.QUEEN));
+        assertFalse(Piece.isKnight(Piece.WHITE));
+        assertFalse(Piece.isKnight(Piece.WHITE | Piece.KING));
+        assertFalse(Piece.isKnight(Piece.WHITE | Piece.PAWN));
+        assertTrue(Piece.isKnight( Piece.WHITE | Piece.KNIGHT));
+        assertFalse(Piece.isKnight( Piece.WHITE | Piece.BISHOP));
+        assertFalse(Piece.isKnight( Piece.WHITE | Piece.ROOK));
+        assertFalse(Piece.isKnight( Piece.WHITE | Piece.QUEEN));
     }
 
     @Test
     void isBishop() {
-        assertEquals(false, Piece.isBishop(Piece.BLACK));
-        assertEquals(false, Piece.isBishop(Piece.BLACK | Piece.KING));
-        assertEquals(false, Piece.isBishop(Piece.BLACK | Piece.PAWN));
-        assertEquals(false, Piece.isBishop( Piece.BLACK | Piece.KNIGHT));
-        assertEquals(true, Piece.isBishop( Piece.BLACK | Piece.BISHOP));
-        assertEquals(false, Piece.isBishop( Piece.BLACK | Piece.ROOK));
-        assertEquals(false, Piece.isBishop( Piece.BLACK | Piece.QUEEN));
+        assertFalse(Piece.isBishop(Piece.BLACK));
+        assertFalse(Piece.isBishop(Piece.BLACK | Piece.KING));
+        assertFalse(Piece.isBishop(Piece.BLACK | Piece.PAWN));
+        assertFalse(Piece.isBishop( Piece.BLACK | Piece.KNIGHT));
+        assertTrue(Piece.isBishop( Piece.BLACK | Piece.BISHOP));
+        assertFalse(Piece.isBishop( Piece.BLACK | Piece.ROOK));
+        assertFalse(Piece.isBishop( Piece.BLACK | Piece.QUEEN));
 
-        assertEquals(false, Piece.isBishop( Piece.UNOCCUPIED));
+        assertFalse(Piece.isBishop( Piece.UNOCCUPIED));
 
-        assertEquals(false, Piece.isBishop(Piece.WHITE));
-        assertEquals(false, Piece.isBishop(Piece.WHITE | Piece.KING));
-        assertEquals(false, Piece.isBishop(Piece.WHITE | Piece.PAWN));
-        assertEquals(false, Piece.isBishop( Piece.WHITE | Piece.KNIGHT));
-        assertEquals(true, Piece.isBishop( Piece.WHITE | Piece.BISHOP));
-        assertEquals(false, Piece.isBishop( Piece.WHITE | Piece.ROOK));
-        assertEquals(false, Piece.isBishop( Piece.WHITE | Piece.QUEEN));
+        assertFalse(Piece.isBishop(Piece.WHITE));
+        assertFalse(Piece.isBishop(Piece.WHITE | Piece.KING));
+        assertFalse(Piece.isBishop(Piece.WHITE | Piece.PAWN));
+        assertFalse(Piece.isBishop( Piece.WHITE | Piece.KNIGHT));
+        assertTrue(Piece.isBishop( Piece.WHITE | Piece.BISHOP));
+        assertFalse(Piece.isBishop( Piece.WHITE | Piece.ROOK));
+        assertFalse(Piece.isBishop( Piece.WHITE | Piece.QUEEN));
     }
 
     @Test
     void isRook() {
-        assertEquals(false, Piece.isRook(Piece.BLACK));
-        assertEquals(false, Piece.isRook(Piece.BLACK | Piece.KING));
-        assertEquals(false, Piece.isRook(Piece.BLACK | Piece.PAWN));
-        assertEquals(false, Piece.isRook( Piece.BLACK | Piece.KNIGHT));
-        assertEquals(false, Piece.isRook( Piece.BLACK | Piece.BISHOP));
-        assertEquals(true, Piece.isRook( Piece.BLACK | Piece.ROOK));
-        assertEquals(false, Piece.isRook( Piece.BLACK | Piece.QUEEN));
+        assertFalse(Piece.isRook(Piece.BLACK));
+        assertFalse(Piece.isRook(Piece.BLACK | Piece.KING));
+        assertFalse(Piece.isRook(Piece.BLACK | Piece.PAWN));
+        assertFalse(Piece.isRook( Piece.BLACK | Piece.KNIGHT));
+        assertFalse(Piece.isRook( Piece.BLACK | Piece.BISHOP));
+        assertTrue(Piece.isRook( Piece.BLACK | Piece.ROOK));
+        assertFalse(Piece.isRook( Piece.BLACK | Piece.QUEEN));
 
-        assertEquals(false, Piece.isRook( Piece.UNOCCUPIED));
+        assertFalse(Piece.isRook( Piece.UNOCCUPIED));
 
-        assertEquals(false, Piece.isRook(Piece.WHITE));
-        assertEquals(false, Piece.isRook(Piece.WHITE | Piece.KING));
-        assertEquals(false, Piece.isRook(Piece.WHITE | Piece.PAWN));
-        assertEquals(false, Piece.isRook( Piece.WHITE | Piece.KNIGHT));
-        assertEquals(false, Piece.isRook( Piece.WHITE | Piece.BISHOP));
-        assertEquals(true, Piece.isRook( Piece.WHITE | Piece.ROOK));
-        assertEquals(false, Piece.isRook( Piece.WHITE | Piece.QUEEN));
+        assertFalse(Piece.isRook(Piece.WHITE));
+        assertFalse(Piece.isRook(Piece.WHITE | Piece.KING));
+        assertFalse(Piece.isRook(Piece.WHITE | Piece.PAWN));
+        assertFalse(Piece.isRook( Piece.WHITE | Piece.KNIGHT));
+        assertFalse(Piece.isRook( Piece.WHITE | Piece.BISHOP));
+        assertTrue(Piece.isRook( Piece.WHITE | Piece.ROOK));
+        assertFalse(Piece.isRook( Piece.WHITE | Piece.QUEEN));
     }
 
     @Test
     void isQueen() {
-        assertEquals(false, Piece.isQueen(Piece.BLACK));
-        assertEquals(false, Piece.isQueen(Piece.BLACK | Piece.KING));
-        assertEquals(false, Piece.isQueen(Piece.BLACK | Piece.PAWN));
-        assertEquals(false, Piece.isQueen( Piece.BLACK | Piece.KNIGHT));
-        assertEquals(false, Piece.isQueen( Piece.BLACK | Piece.BISHOP));
-        assertEquals(false, Piece.isQueen( Piece.BLACK | Piece.ROOK));
-        assertEquals(true, Piece.isQueen( Piece.BLACK | Piece.QUEEN));
+        assertFalse(Piece.isQueen(Piece.BLACK));
+        assertFalse(Piece.isQueen(Piece.BLACK | Piece.KING));
+        assertFalse(Piece.isQueen(Piece.BLACK | Piece.PAWN));
+        assertFalse(Piece.isQueen( Piece.BLACK | Piece.KNIGHT));
+        assertFalse(Piece.isQueen( Piece.BLACK | Piece.BISHOP));
+        assertFalse(Piece.isQueen( Piece.BLACK | Piece.ROOK));
+        assertTrue(Piece.isQueen( Piece.BLACK | Piece.QUEEN));
 
-        assertEquals(false, Piece.isQueen( Piece.UNOCCUPIED));
+        assertFalse(Piece.isQueen( Piece.UNOCCUPIED));
 
-        assertEquals(false, Piece.isQueen(Piece.WHITE));
-        assertEquals(false, Piece.isQueen(Piece.WHITE | Piece.KING));
-        assertEquals(false, Piece.isQueen(Piece.WHITE | Piece.PAWN));
-        assertEquals(false, Piece.isQueen( Piece.WHITE | Piece.KNIGHT));
-        assertEquals(false, Piece.isQueen( Piece.WHITE | Piece.BISHOP));
-        assertEquals(false, Piece.isQueen( Piece.WHITE | Piece.ROOK));
-        assertEquals(true, Piece.isQueen( Piece.WHITE | Piece.QUEEN));
+        assertFalse(Piece.isQueen(Piece.WHITE));
+        assertFalse(Piece.isQueen(Piece.WHITE | Piece.KING));
+        assertFalse(Piece.isQueen(Piece.WHITE | Piece.PAWN));
+        assertFalse(Piece.isQueen( Piece.WHITE | Piece.KNIGHT));
+        assertFalse(Piece.isQueen( Piece.WHITE | Piece.BISHOP));
+        assertFalse(Piece.isQueen( Piece.WHITE | Piece.ROOK));
+        assertTrue(Piece.isQueen( Piece.WHITE | Piece.QUEEN));
     }
 
     @Test

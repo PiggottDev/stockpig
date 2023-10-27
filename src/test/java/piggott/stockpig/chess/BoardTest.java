@@ -304,65 +304,65 @@ class BoardTest {
         // Just Kings
         board.addPiece(Piece.WHITE | Piece.KING, Bitboard.INDEX[0]);
         board.addPiece(Piece.BLACK | Piece.KING, Bitboard.INDEX[2]);
-        assertTrue(Board.isDeadPosition(board));
+        assertTrue(board.isDeadPosition());
 
         // King + Knight vs King
         board.addPiece(Piece.WHITE | Piece.KNIGHT, Bitboard.INDEX[10]);
-        assertTrue(Board.isDeadPosition(board));
+        assertTrue(board.isDeadPosition());
         board.removePiece(Piece.WHITE | Piece.KNIGHT, Bitboard.INDEX[10]);
         board.addPiece(Piece.BLACK | Piece.KNIGHT, Bitboard.INDEX[10]);
-        assertTrue(Board.isDeadPosition(board));
+        assertTrue(board.isDeadPosition());
         board.removePiece(Piece.BLACK | Piece.KNIGHT, Bitboard.INDEX[10]);
 
         // King + Bishop vs King
         board.addPiece(Piece.WHITE | Piece.BISHOP, Bitboard.INDEX[10]);
-        assertTrue(Board.isDeadPosition(board));
+        assertTrue(board.isDeadPosition());
         board.removePiece(Piece.WHITE | Piece.BISHOP, Bitboard.INDEX[10]);
         board.addPiece(Piece.BLACK | Piece.BISHOP, Bitboard.INDEX[10]);
-        assertTrue(Board.isDeadPosition(board));
+        assertTrue(board.isDeadPosition());
         board.removePiece(Piece.BLACK | Piece.BISHOP, Bitboard.INDEX[10]);
 
         // King + Knight vs King + Knight
         board.addPiece(Piece.WHITE | Piece.KNIGHT, Bitboard.INDEX[10]);
         board.addPiece(Piece.BLACK | Piece.KNIGHT, Bitboard.INDEX[11]);
-        assertFalse(Board.isDeadPosition(board));
+        assertFalse(board.isDeadPosition());
         board.removePiece(Piece.BLACK | Piece.KNIGHT, Bitboard.INDEX[11]);
         board.removePiece(Piece.WHITE | Piece.KNIGHT, Bitboard.INDEX[10]);
 
         // King + Bishop vs King + Bishop (same colour)
         board.addPiece(Piece.WHITE | Piece.BISHOP, Bitboard.INDEX[7]);
         board.addPiece(Piece.BLACK | Piece.BISHOP, Bitboard.INDEX[23]);
-        assertTrue(Board.isDeadPosition(board));
+        assertTrue(board.isDeadPosition());
         board.removePiece(Piece.BLACK | Piece.BISHOP, Bitboard.INDEX[23]);
         board.removePiece(Piece.WHITE | Piece.BISHOP, Bitboard.INDEX[7]);
 
         // King + Bishop vs King + Bishop (different colour)
         board.addPiece(Piece.WHITE | Piece.BISHOP, Bitboard.INDEX[7]);
         board.addPiece(Piece.BLACK | Piece.BISHOP, Bitboard.INDEX[15]);
-        assertFalse(Board.isDeadPosition(board));
+        assertFalse(board.isDeadPosition());
         board.removePiece(Piece.BLACK | Piece.BISHOP, Bitboard.INDEX[15]);
         board.removePiece(Piece.WHITE | Piece.BISHOP, Bitboard.INDEX[7]);
 
         // King + Rook vs King
         board.addPiece(Piece.WHITE | Piece.ROOK, Bitboard.INDEX[7]);
-        assertFalse(Board.isDeadPosition(board));
+        assertFalse(board.isDeadPosition());
         board.removePiece(Piece.WHITE | Piece.ROOK, Bitboard.INDEX[7]);
 
         // King + Rook vs King
         board.addPiece(Piece.BLACK | Piece.ROOK, Bitboard.INDEX[7]);
-        assertFalse(Board.isDeadPosition(board));
+        assertFalse(board.isDeadPosition());
         board.removePiece(Piece.BLACK | Piece.ROOK, Bitboard.INDEX[7]);
     }
 
     @Test
     void fromFen() {
-        assertEquals(Board.standard(), Board.fromFen("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"));
+        assertEquals(Board.standard(), Fen.toBoard("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"));
 
         final Board board = Board.empty();
-        assertEquals(board, Board.fromFen("8/8/8/8/8/8/8/8"));
+        assertEquals(board, Fen.toBoard("8/8/8/8/8/8/8/8"));
         board.addPiece(Piece.WHITE | Piece.KING, Bitboard.INDEX[1]);
         board.addPiece(Piece.BLACK | Piece.KING, Bitboard.INDEX[62]);
-        assertEquals(board, Board.fromFen("6k1/8/8/8/8/8/8/1K6"));
+        assertEquals(board, Fen.toBoard("6k1/8/8/8/8/8/8/1K6"));
     }
 
     @Test
@@ -377,7 +377,7 @@ class BoardTest {
     }
 
     @Test
-    void testToString() {
+    void debugString() {
         assertEquals(
                 "+---+---+---+---+---+---+---+---+\n" +
                 "|   |   |   |   |   |   |   |   |\n" +
