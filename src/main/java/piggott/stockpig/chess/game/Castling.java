@@ -1,4 +1,4 @@
-package piggott.stockpig.chess;
+package piggott.stockpig.chess.game;
 
 /**
  * An int bit array is used to show whether castling is possible for each team/side.
@@ -7,7 +7,7 @@ package piggott.stockpig.chess;
 public class Castling {
 
     // Bit maps showing whether castling each side is possible
-    public static final int ALL_ALLOWED = 0b00001111;
+    static final int ALL_ALLOWED = 0b00001111;
 
     private static final int NONE_ALLOWED = 0;
     private static final int[] BLACK_CASTLE_ALLOWED = {0b00000001, 0b00000010, 0b00000011};
@@ -25,19 +25,21 @@ public class Castling {
     private static final long[][] WHITE_CASTLING = initWhiteCastling();
 
     // Pre-created moves for each castle
-    private static final Move[] WHITE_MOVES = {
-            Move.castle(Bitboard.INDEX[4], Bitboard.INDEX[6], Piece.WHITE | Piece.KING, Bitboard.INDEX[5] | Bitboard.INDEX[7]),
-            Move.castle(Bitboard.INDEX[4], Bitboard.INDEX[2], Piece.WHITE | Piece.KING, Bitboard.INDEX[0] | Bitboard.INDEX[3])
+    private static final ChessMove[] WHITE_MOVES = {
+            ChessMove.castle(Bitboard.INDEX[4], Bitboard.INDEX[6], Piece.WHITE | Piece.KING, Bitboard.INDEX[5] | Bitboard.INDEX[7]),
+            ChessMove.castle(Bitboard.INDEX[4], Bitboard.INDEX[2], Piece.WHITE | Piece.KING, Bitboard.INDEX[0] | Bitboard.INDEX[3])
     };
-    private static final Move[] BLACK_MOVES = {
-            Move.castle(Bitboard.INDEX[60], Bitboard.INDEX[62], Piece.BLACK | Piece.KING, Bitboard.INDEX[61] | Bitboard.INDEX[63]),
-            Move.castle(Bitboard.INDEX[60], Bitboard.INDEX[58], Piece.BLACK | Piece.KING, Bitboard.INDEX[56] | Bitboard.INDEX[59])
+    private static final ChessMove[] BLACK_MOVES = {
+            ChessMove.castle(Bitboard.INDEX[60], Bitboard.INDEX[62], Piece.BLACK | Piece.KING, Bitboard.INDEX[61] | Bitboard.INDEX[63]),
+            ChessMove.castle(Bitboard.INDEX[60], Bitboard.INDEX[58], Piece.BLACK | Piece.KING, Bitboard.INDEX[56] | Bitboard.INDEX[59])
     };
 
     private static final char BLACK_KING_SIDE = 'k';
     private static final char BLACK_QUEEN_SIDE = 'q';
     private static final char WHITE_KING_SIDE = 'K';
     private static final char WHITE_QUEEN_SIDE = 'Q';
+
+    private Castling() {}
 
     /**
      * Updates the allowed castles bitmap after a given move.
@@ -47,7 +49,7 @@ public class Castling {
      * @param isWhiteTurn which team performed the move
      * @return new bitmap of allowed castles
      */
-    static int getCastlesAllowedAfterMove(int currentCastlesPossible, final Move move, final boolean isWhiteTurn) {
+    static int getCastlesAllowedAfterMove(int currentCastlesPossible, final ChessMove move, final boolean isWhiteTurn) {
         if (currentCastlesPossible == NONE_ALLOWED) return NONE_ALLOWED;
 
         // Check if the move affects the movers castle possibilities
@@ -83,7 +85,7 @@ public class Castling {
      * @param checkedSquares threatened/checked squares bitboard
      * @return king side castle move OR null
      */
-    static Move getKingSideCastleIfPossible(final int currentCastlesPossible, final boolean isWhiteTurn, final long unoccupiedSquares, final long checkedSquares) {
+    static ChessMove getKingSideCastleIfPossible(final int currentCastlesPossible, final boolean isWhiteTurn, final long unoccupiedSquares, final long checkedSquares) {
         return getCastleMoveIfPossible(KING_SIDE, currentCastlesPossible, isWhiteTurn, unoccupiedSquares, checkedSquares);
     }
 
@@ -97,11 +99,11 @@ public class Castling {
      * @param checkedSquares threatened/checked squares bitboard
      * @return queen side castle move OR null
      */
-    static Move getQueenSideCastleIfPossible(final int currentCastlesPossible, final boolean isWhiteTurn, final long unoccupiedSquares, final long checkedSquares) {
+    static ChessMove getQueenSideCastleIfPossible(final int currentCastlesPossible, final boolean isWhiteTurn, final long unoccupiedSquares, final long checkedSquares) {
         return getCastleMoveIfPossible(QUEEN_SIDE, currentCastlesPossible, isWhiteTurn, unoccupiedSquares, checkedSquares);
     }
 
-    private static Move getCastleMoveIfPossible(final int side, final int currentCastlesPossible, final boolean isWhiteTurn, final long unoccupiedSquares, final long checkedSquares) {
+    private static ChessMove getCastleMoveIfPossible(final int side, final int currentCastlesPossible, final boolean isWhiteTurn, final long unoccupiedSquares, final long checkedSquares) {
         if (!isAllowed(currentCastlesPossible, isWhiteTurn, side)) return null; // Castling not allowed this side
 
         final long emptySquaresRequired = get(EMPTY_SQUARES, isWhiteTurn, side);

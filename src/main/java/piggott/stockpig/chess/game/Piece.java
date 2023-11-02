@@ -1,4 +1,4 @@
-package piggott.stockpig.chess;
+package piggott.stockpig.chess.game;
 
 /**
  * Chess pieces are represented with a single int bitmap.
@@ -52,6 +52,8 @@ public class Piece {
     private static final char B = 'B';
     private static final char R = 'R';
     private static final char Q = 'Q';
+
+    private Piece() {}
 
     public static int getTeamOnly(final int piece) {
         return (TEAM_BITMASK & piece);

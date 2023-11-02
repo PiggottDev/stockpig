@@ -1,4 +1,4 @@
-package piggott.stockpig.chess;
+package piggott.stockpig.chess.game;
 
 /**
  * Stores all square and piece data of a chess board.
@@ -8,7 +8,7 @@ package piggott.stockpig.chess;
  * @see Piece
  * @see Bitboard
  */
-public class Board {
+class Board {
 
     private final long[] pieceBitboards;
 
@@ -62,7 +62,7 @@ public class Board {
      *
      * @return whether the board is in a dead position
      */
-    public boolean isDeadPosition() {
+    boolean isDeadPosition() {
         int whiteTeamSize = Long.bitCount(getPieceBitboard(Piece.WHITE));
         int blackTeamSize = Long.bitCount(getPieceBitboard(Piece.BLACK));
 
@@ -102,7 +102,7 @@ public class Board {
      * @param piece piece
      * @return bitboard
      */
-    public long getPieceBitboard(final int piece) {
+    long getPieceBitboard(final int piece) {
         return pieceBitboards[piece];
     }
 
@@ -136,7 +136,7 @@ public class Board {
      * @param bitboard bit to retrieve piece for
      * @return piece
      */
-    public int getPieceAtBit(final long bitboard) {
+    int getPieceAtBit(final long bitboard) {
         if (Bitboard.intersects(bitboard, pieceBitboards[Piece.UNOCCUPIED])) return Piece.UNOCCUPIED;
 
         return Bitboard.intersects(bitboard, pieceBitboards[Piece.WHITE])  ? getPieceAtBitFromTeam(bitboard,true) : getPieceAtBitFromTeam(bitboard,false);
@@ -170,16 +170,6 @@ public class Board {
         return Piece.UNOCCUPIED;
     }
 
-    /**
-     * Get the piece at the given square index.
-     *
-     * @param index square index
-     * @return piece
-     */
-    public int getPieceAtIndex(final int index) {
-        return getPieceAtBit(Bitboard.INDEX[index]);
-    }
-
     // -- Moves --
 
     /**
@@ -187,7 +177,7 @@ public class Board {
      *
      * @param move move
      */
-    void applyMove(final Move move) {
+    void applyMove(final ChessMove move) {
         // Remove the moving piece from it's start location
         pieceBitboards[move.getMovingPiece()] &= ~move.getFrom();
         pieceBitboards[Piece.UNOCCUPIED] |= move.getFrom();
@@ -228,7 +218,7 @@ public class Board {
      *
      * @param move move
      */
-    void undoMove(final Move move) {
+    void undoMove(final ChessMove move) {
         // Add the moving piece back where it started
         pieceBitboards[move.getMovingPiece()] |= move.getFrom();
         pieceBitboards[Piece.UNOCCUPIED] &= ~move.getFrom();
@@ -263,20 +253,6 @@ public class Board {
         }
     }
 
-    // -- equals --
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (!(obj instanceof Board)) return false;
-        final Board board = (Board) obj;
-        for (int piece = 0; piece < pieceBitboards.length; piece++) {
-            if (pieceBitboards[piece] != board.getPieceBitboard(piece)) return false;
-        }
-        return true;
-    }
-
     // -- Debug String --
 
     private static final String LINE_ROW = "+---+---+---+---+---+---+---+---+\n";
@@ -285,7 +261,7 @@ public class Board {
     private static final String ROW_END = " |\n";
     private static final String CELL_BORDER = " | ";
 
-    public String debugString() {
+    String debugString() {
         final StringBuilder boardString = new StringBuilder();
 
         for (int i = 7; i >= 0; i--) {

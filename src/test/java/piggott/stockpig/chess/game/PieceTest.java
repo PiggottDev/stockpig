@@ -1,4 +1,4 @@
-package piggott.stockpig.chess;
+package piggott.stockpig.chess.game;
 
 import org.junit.jupiter.api.Test;
 

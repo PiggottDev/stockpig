@@ -1,9 +1,11 @@
-package piggott.stockpig.chess;
+package piggott.stockpig.chess.game;
+
+import piggott.game.PartisanGame;
 
 /**
  * Provides an object to store chess move data.
  */
-public class Move {
+public class ChessMove implements PartisanGame.Move {
 
     private final long from;
     private final long to;
@@ -24,7 +26,7 @@ public class Move {
      * @param enPassantTarget bitboard, if the move is a double pawn push, this is the square that can now be the target of an en passant
      * @param castleRookMove bitboard of rook movement, for castle moves
      */
-    private Move(final long from, final long to, final int movingPiece, final int capturedPiece, final int promotedToPiece, final long capturedEnPassantPawn, final long enPassantTarget, final long castleRookMove) {
+    private ChessMove(final long from, final long to, final int movingPiece, final int capturedPiece, final int promotedToPiece, final long capturedEnPassantPawn, final long enPassantTarget, final long castleRookMove) {
         this.from = from;
         this.to = to;
         this.movingPiece = movingPiece;
@@ -35,32 +37,37 @@ public class Move {
         this.castleRookMove = castleRookMove;
     }
 
-    static Move castle(final long from, final long to, final int movingPiece, final long castleRookMove) {
-        return new Move(from, to, movingPiece, Piece.EMPTY, Piece.EMPTY, Bitboard.EMPTY, Bitboard.EMPTY, castleRookMove);
+    static ChessMove castle(final long from, final long to, final int movingPiece, final long castleRookMove) {
+        return new ChessMove(from, to, movingPiece, Piece.EMPTY, Piece.EMPTY, Bitboard.EMPTY, Bitboard.EMPTY, castleRookMove);
     }
 
-    static Move doublePush(final long from, final long to, final int movingPiece, final long enPassantTarget) {
-        return new Move(from, to, movingPiece, Piece.EMPTY, Piece.EMPTY, Bitboard.EMPTY, enPassantTarget, Bitboard.EMPTY);
+    static ChessMove doublePush(final long from, final long to, final int movingPiece, final long enPassantTarget) {
+        return new ChessMove(from, to, movingPiece, Piece.EMPTY, Piece.EMPTY, Bitboard.EMPTY, enPassantTarget, Bitboard.EMPTY);
     }
 
-    static Move enPassantCapture(final long from, final long to, final int movingPiece, final int capturedPiece, final long capturedEnPassantPawn) {
-        return new Move(from, to, movingPiece, capturedPiece, Piece.EMPTY, capturedEnPassantPawn, Bitboard.EMPTY, Bitboard.EMPTY);
+    static ChessMove enPassantCapture(final long from, final long to, final int movingPiece, final int capturedPiece, final long capturedEnPassantPawn) {
+        return new ChessMove(from, to, movingPiece, capturedPiece, Piece.EMPTY, capturedEnPassantPawn, Bitboard.EMPTY, Bitboard.EMPTY);
     }
 
-    static Move pawnPromotionWithCapture(final long from, final long to, final int movingPiece, final int capturedPiece, final int promotedToPiece) {
-        return new Move(from, to, movingPiece, capturedPiece, promotedToPiece, Bitboard.EMPTY, Bitboard.EMPTY, Bitboard.EMPTY);
+    static ChessMove pawnPromotionWithCapture(final long from, final long to, final int movingPiece, final int capturedPiece, final int promotedToPiece) {
+        return new ChessMove(from, to, movingPiece, capturedPiece, promotedToPiece, Bitboard.EMPTY, Bitboard.EMPTY, Bitboard.EMPTY);
     }
 
-    static Move pawnPromotion(final long from, final long to, final int movingPiece, final int promotedToPiece) {
-        return new Move(from, to, movingPiece, Piece.EMPTY, promotedToPiece, Bitboard.EMPTY, Bitboard.EMPTY, Bitboard.EMPTY);
+    static ChessMove pawnPromotion(final long from, final long to, final int movingPiece, final int promotedToPiece) {
+        return new ChessMove(from, to, movingPiece, Piece.EMPTY, promotedToPiece, Bitboard.EMPTY, Bitboard.EMPTY, Bitboard.EMPTY);
     }
 
-    static Move basicCapture(final long from, final long to, final int movingPiece, final int capturedPiece) {
-        return new Move(from, to, movingPiece, capturedPiece, Piece.EMPTY, Bitboard.EMPTY, Bitboard.EMPTY, Bitboard.EMPTY);
+    static ChessMove basicCapture(final long from, final long to, final int movingPiece, final int capturedPiece) {
+        return new ChessMove(from, to, movingPiece, capturedPiece, Piece.EMPTY, Bitboard.EMPTY, Bitboard.EMPTY, Bitboard.EMPTY);
     }
 
-    static Move basicMove(final long from, final long to, final int movingPiece) {
-        return new Move(from, to, movingPiece, Piece.EMPTY, Piece.EMPTY, Bitboard.EMPTY, Bitboard.EMPTY, Bitboard.EMPTY);
+    static ChessMove basicMove(final long from, final long to, final int movingPiece) {
+        return new ChessMove(from, to, movingPiece, Piece.EMPTY, Piece.EMPTY, Bitboard.EMPTY, Bitboard.EMPTY, Bitboard.EMPTY);
+    }
+
+    @Override
+    public boolean isQuiet() {
+        return !isCapture();
     }
 
     public long getFrom() {
@@ -126,17 +133,6 @@ public class Move {
     @Override
     public String toString() {
         return AlgebraNotation.fromBitboard(from) + AlgebraNotation.fromBitboard(to) + (isPromotion() ? Piece.toChar(promotedToPiece) : "");
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) return false;
-        if (this == obj) return true;
-        if (!(obj instanceof Move)) return false;
-        final Move move = (Move) obj;
-        return (from == move.getFrom()) && (to == move.getTo()) && (movingPiece == move.getMovingPiece()) && (capturedPiece == move.getCapturedPiece())
-                && (promotedToPiece == move.promotedToPiece) && (capturedEnPassantPawn == move.getCapturedEnPassantPawn()) && (enPassantTarget == move.getEnPassantTarget())
-                && (castleRookMove == move.getCastleRookMove());
     }
 
 }

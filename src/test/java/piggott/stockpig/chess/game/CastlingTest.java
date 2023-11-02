@@ -1,4 +1,4 @@
-package piggott.stockpig.chess;
+package piggott.stockpig.chess.game;
 
 import org.junit.jupiter.api.Test;
 
@@ -10,7 +10,7 @@ class CastlingTest {
 
     @Test
     void getCastlesAllowedAfterMove_white_takeKingSideRook() {
-        final Move move = Move.basicCapture(Bitboard.INDEX[54], Bitboard.INDEX[63], Piece.WHITE | Piece.QUEEN, Piece.BLACK | Piece.ROOK);
+        final ChessMove move = ChessMove.basicCapture(Bitboard.INDEX[54], Bitboard.INDEX[63], Piece.WHITE | Piece.QUEEN, Piece.BLACK | Piece.ROOK);
 
         assertEquals(0b1110, Castling.getCastlesAllowedAfterMove(Castling.ALL_ALLOWED, move, true));
 
@@ -27,7 +27,7 @@ class CastlingTest {
 
     @Test
     void getCastlesAllowedAfterMove_white_takeQueenSideRook() {
-        final Move move = Move.basicCapture(Bitboard.INDEX[32], Bitboard.INDEX[56], Piece.WHITE | Piece.BISHOP, Piece.BLACK | Piece.ROOK);
+        final ChessMove move = ChessMove.basicCapture(Bitboard.INDEX[32], Bitboard.INDEX[56], Piece.WHITE | Piece.BISHOP, Piece.BLACK | Piece.ROOK);
 
         assertEquals(0b1101, Castling.getCastlesAllowedAfterMove(Castling.ALL_ALLOWED, move, true));
 
@@ -44,7 +44,7 @@ class CastlingTest {
 
     @Test
     void getCastlesAllowedAfterMove_white_moveKing() {
-        final Move move = Move.basicMove(Bitboard.INDEX[4], Bitboard.INDEX[12], Piece.WHITE | Piece.KING);
+        final ChessMove move = ChessMove.basicMove(Bitboard.INDEX[4], Bitboard.INDEX[12], Piece.WHITE | Piece.KING);
 
         assertEquals(0b0011, Castling.getCastlesAllowedAfterMove(Castling.ALL_ALLOWED, move, true));
 
@@ -61,7 +61,7 @@ class CastlingTest {
 
     @Test
     void getCastlesAllowedAfterMove_white_moveKingSideRook() {
-        final Move move = Move.basicMove(Bitboard.INDEX[7], Bitboard.INDEX[19], Piece.WHITE | Piece.ROOK);
+        final ChessMove move = ChessMove.basicMove(Bitboard.INDEX[7], Bitboard.INDEX[19], Piece.WHITE | Piece.ROOK);
 
         assertEquals(0b1011, Castling.getCastlesAllowedAfterMove(Castling.ALL_ALLOWED, move, true));
 
@@ -78,7 +78,7 @@ class CastlingTest {
 
     @Test
     void getCastlesAllowedAfterMove_white_moveQueenSideRook() {
-        final Move move = Move.basicMove(Bitboard.INDEX[0], Bitboard.INDEX[12], Piece.WHITE | Piece.ROOK);
+        final ChessMove move = ChessMove.basicMove(Bitboard.INDEX[0], Bitboard.INDEX[12], Piece.WHITE | Piece.ROOK);
 
         assertEquals(0b0111, Castling.getCastlesAllowedAfterMove(Castling.ALL_ALLOWED, move, true));
 

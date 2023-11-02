@@ -1,4 +1,4 @@
-package piggott.stockpig.chess;
+package piggott.stockpig.chess.game;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +45,7 @@ class MoveGenerator {
     private static final int DIAGONAL_NEGATIVE = 3;
 
     // List for pushing moves to
-    private final List<Move> moves = new ArrayList<>();
+    private final List<ChessMove> moves = new ArrayList<>();
 
     MoveGenerator(final Board board, final boolean isWhiteTurn, final int castlesAllowed, final long enPassantTarget) {
         this.board = board;
@@ -112,7 +112,7 @@ class MoveGenerator {
      *
      * @return all legal moves
      */
-    List<Move> generateLegalMoves() {
+    List<ChessMove> generateLegalMoves() {
 
         if (isDoubleCheck) {
             kingMoves();
@@ -125,8 +125,8 @@ class MoveGenerator {
             queenMoves();
         } else {
 
-            final Move castleKsMove = Castling.getKingSideCastleIfPossible(castlesAllowed, isWhiteTurn, unoccupied, threatened);
-            final Move castleQsMove = Castling.getQueenSideCastleIfPossible(castlesAllowed, isWhiteTurn, unoccupied, threatened);
+            final ChessMove castleKsMove = Castling.getKingSideCastleIfPossible(castlesAllowed, isWhiteTurn, unoccupied, threatened);
+            final ChessMove castleQsMove = Castling.getQueenSideCastleIfPossible(castlesAllowed, isWhiteTurn, unoccupied, threatened);
             if (castleKsMove != null) moves.add(castleKsMove);
             if (castleQsMove != null) moves.add(castleQsMove);
 
@@ -161,12 +161,12 @@ class MoveGenerator {
 
             final long to = Bitboard.directionalShift(onePushablePawn, Piece.getForwardDirection(isWhiteTurn));
             if (Bitboard.intersects(to, Piece.getPawnPromotionRank(isWhiteTurn))) {
-                moves.add(Move.pawnPromotion(onePushablePawn, to, pawnPiece, team | Piece.QUEEN));
-                moves.add(Move.pawnPromotion(onePushablePawn, to, pawnPiece, team | Piece.KNIGHT));
-                moves.add(Move.pawnPromotion(onePushablePawn, to, pawnPiece, team | Piece.ROOK));
-                moves.add(Move.pawnPromotion(onePushablePawn, to, pawnPiece, team | Piece.BISHOP));
+                moves.add(ChessMove.pawnPromotion(onePushablePawn, to, pawnPiece, team | Piece.QUEEN));
+                moves.add(ChessMove.pawnPromotion(onePushablePawn, to, pawnPiece, team | Piece.KNIGHT));
+                moves.add(ChessMove.pawnPromotion(onePushablePawn, to, pawnPiece, team | Piece.ROOK));
+                moves.add(ChessMove.pawnPromotion(onePushablePawn, to, pawnPiece, team | Piece.BISHOP));
             } else {
-                moves.add(Move.basicMove(onePushablePawn, to, pawnPiece));
+                moves.add(ChessMove.basicMove(onePushablePawn, to, pawnPiece));
             }
             onePushablePawns ^= onePushablePawn;
         }
@@ -178,7 +178,7 @@ class MoveGenerator {
 
             final long emptySquare = Bitboard.directionalShift(twoPushablePawn, Piece.getForwardDirection(isWhiteTurn));
             final long to = Bitboard.directionalShift(emptySquare, Piece.getForwardDirection(isWhiteTurn));
-            moves.add(Move.doublePush(twoPushablePawn, to, pawnPiece, emptySquare));
+            moves.add(ChessMove.doublePush(twoPushablePawn, to, pawnPiece, emptySquare));
 
             twoPushablePawns ^= twoPushablePawn;
         }
@@ -193,15 +193,15 @@ class MoveGenerator {
             if (Bitboard.intersects(to, enPassantTarget)) {
                 final long capturedPawn = Bitboard.oppositeDirectionalShift(to, Piece.getForwardDirection(isWhiteTurn));
                 if (!isIllegalEnPassantState(pawnWithPositiveAttack, capturedPawn)) {
-                    moves.add(Move.enPassantCapture(pawnWithPositiveAttack, to, pawnPiece, enemyTeam | Piece.PAWN, capturedPawn));
+                    moves.add(ChessMove.enPassantCapture(pawnWithPositiveAttack, to, pawnPiece, enemyTeam | Piece.PAWN, capturedPawn));
                 }
             } else if (Bitboard.intersects(to, Piece.getPawnPromotionRank(isWhiteTurn))) {
-                moves.add(Move.pawnPromotionWithCapture(pawnWithPositiveAttack, to, pawnPiece, board.getPieceAtBitFromTeam(to, enemyTeam), team | Piece.QUEEN));
-                moves.add(Move.pawnPromotionWithCapture(pawnWithPositiveAttack, to, pawnPiece, board.getPieceAtBitFromTeam(to, enemyTeam), team | Piece.KNIGHT));
-                moves.add(Move.pawnPromotionWithCapture(pawnWithPositiveAttack, to, pawnPiece, board.getPieceAtBitFromTeam(to, enemyTeam), team | Piece.ROOK));
-                moves.add(Move.pawnPromotionWithCapture(pawnWithPositiveAttack, to, pawnPiece, board.getPieceAtBitFromTeam(to, enemyTeam), team | Piece.BISHOP));
+                moves.add(ChessMove.pawnPromotionWithCapture(pawnWithPositiveAttack, to, pawnPiece, board.getPieceAtBitFromTeam(to, enemyTeam), team | Piece.QUEEN));
+                moves.add(ChessMove.pawnPromotionWithCapture(pawnWithPositiveAttack, to, pawnPiece, board.getPieceAtBitFromTeam(to, enemyTeam), team | Piece.KNIGHT));
+                moves.add(ChessMove.pawnPromotionWithCapture(pawnWithPositiveAttack, to, pawnPiece, board.getPieceAtBitFromTeam(to, enemyTeam), team | Piece.ROOK));
+                moves.add(ChessMove.pawnPromotionWithCapture(pawnWithPositiveAttack, to, pawnPiece, board.getPieceAtBitFromTeam(to, enemyTeam), team | Piece.BISHOP));
             } else {
-                moves.add(Move.basicCapture(pawnWithPositiveAttack, to, pawnPiece, board.getPieceAtBitFromTeam(to, enemyTeam)));
+                moves.add(ChessMove.basicCapture(pawnWithPositiveAttack, to, pawnPiece, board.getPieceAtBitFromTeam(to, enemyTeam)));
             }
             pawnsWithPositiveAttack ^= pawnWithPositiveAttack;
         }
@@ -215,15 +215,15 @@ class MoveGenerator {
             if (Bitboard.intersects(to, enPassantTarget)) {
                 final long capturedPawn = Bitboard.oppositeDirectionalShift(to, Piece.getForwardDirection(isWhiteTurn));
                 if (!isIllegalEnPassantState(pawnWithNegativeAttack, capturedPawn)) {
-                    moves.add(Move.enPassantCapture(pawnWithNegativeAttack, to, pawnPiece, enemyTeam | Piece.PAWN, capturedPawn));
+                    moves.add(ChessMove.enPassantCapture(pawnWithNegativeAttack, to, pawnPiece, enemyTeam | Piece.PAWN, capturedPawn));
                 }
             } else if (Bitboard.intersects(to, Piece.getPawnPromotionRank(isWhiteTurn))) {
-                moves.add(Move.pawnPromotionWithCapture(pawnWithNegativeAttack, to, pawnPiece, board.getPieceAtBitFromTeam(to, enemyTeam), team | Piece.QUEEN));
-                moves.add(Move.pawnPromotionWithCapture(pawnWithNegativeAttack, to, pawnPiece, board.getPieceAtBitFromTeam(to, enemyTeam), team | Piece.KNIGHT));
-                moves.add(Move.pawnPromotionWithCapture(pawnWithNegativeAttack, to, pawnPiece, board.getPieceAtBitFromTeam(to, enemyTeam), team | Piece.ROOK));
-                moves.add(Move.pawnPromotionWithCapture(pawnWithNegativeAttack, to, pawnPiece, board.getPieceAtBitFromTeam(to, enemyTeam), team | Piece.BISHOP));
+                moves.add(ChessMove.pawnPromotionWithCapture(pawnWithNegativeAttack, to, pawnPiece, board.getPieceAtBitFromTeam(to, enemyTeam), team | Piece.QUEEN));
+                moves.add(ChessMove.pawnPromotionWithCapture(pawnWithNegativeAttack, to, pawnPiece, board.getPieceAtBitFromTeam(to, enemyTeam), team | Piece.KNIGHT));
+                moves.add(ChessMove.pawnPromotionWithCapture(pawnWithNegativeAttack, to, pawnPiece, board.getPieceAtBitFromTeam(to, enemyTeam), team | Piece.ROOK));
+                moves.add(ChessMove.pawnPromotionWithCapture(pawnWithNegativeAttack, to, pawnPiece, board.getPieceAtBitFromTeam(to, enemyTeam), team | Piece.BISHOP));
             } else {
-                moves.add(Move.basicCapture(pawnWithNegativeAttack, to, pawnPiece, board.getPieceAtBitFromTeam(to, enemyTeam)));
+                moves.add(ChessMove.basicCapture(pawnWithNegativeAttack, to, pawnPiece, board.getPieceAtBitFromTeam(to, enemyTeam)));
             }
             pawnsWithNegativeAttack ^= pawnWithNegativeAttack;
         }
@@ -328,9 +328,9 @@ class MoveGenerator {
 
                 if (to != Bitboard.EMPTY) {
                     if (Bitboard.intersects(unoccupied, to)) {
-                        moves.add(Move.basicMove(knight, to, knightPiece));
+                        moves.add(ChessMove.basicMove(knight, to, knightPiece));
                     } else {
-                        moves.add(Move.basicCapture(knight, to, knightPiece, board.getPieceAtBitFromTeam(to, enemyTeam)));
+                        moves.add(ChessMove.basicCapture(knight, to, knightPiece, board.getPieceAtBitFromTeam(to, enemyTeam)));
                     }
                 }
             }
@@ -346,9 +346,9 @@ class MoveGenerator {
             final long to = Bitboard.directionalShiftBoundedWithinArea(king, direction, targetSquares);
             if (Bitboard.EMPTY != to) { // Move is possible
                 if (Bitboard.intersects(to, unoccupied)) {
-                    moves.add(Move.basicMove(king, to, team | Piece.KING));
+                    moves.add(ChessMove.basicMove(king, to, team | Piece.KING));
                 } else {
-                    moves.add(Move.basicCapture(king, to, team | Piece.KING, board.getPieceAtBitFromTeam(to, enemyTeam)));
+                    moves.add(ChessMove.basicCapture(king, to, team | Piece.KING, board.getPieceAtBitFromTeam(to, enemyTeam)));
                 }
             }
         }
@@ -362,7 +362,7 @@ class MoveGenerator {
         while (to != Bitboard.EMPTY) {
 
             if (Bitboard.intersects(to, movableSquares)) {
-                moves.add(Move.basicMove(piece, to, pieceType));
+                moves.add(ChessMove.basicMove(piece, to, pieceType));
             }
 
             previousTo = to;
@@ -371,7 +371,7 @@ class MoveGenerator {
 
         to = Bitboard.directionalShiftBoundedWithinArea(previousTo, direction, enemyPieces);
         if (Bitboard.intersects(to, movableSquares)) {
-            moves.add(Move.basicCapture(piece, to, pieceType, board.getPieceAtBitFromTeam(to, enemyTeam)));
+            moves.add(ChessMove.basicCapture(piece, to, pieceType, board.getPieceAtBitFromTeam(to, enemyTeam)));
         }
     }
 

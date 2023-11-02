@@ -1,4 +1,4 @@
-package piggott.stockpig.chess;
+package piggott.stockpig.chess.game;
 
 /**
  * Provides methods for converting to and from Forsyth–Edwards Notation.
@@ -7,15 +7,17 @@ public class Fen {
 
     public static final String STANDARD_GAME = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
+    private Fen() {}
+
     /**
      * Parse a Fen string into a game.
      *
      * @param fen fen
      * @return game
      */
-    public static Game toGame(final String fen) {
+    static ChessGame toGame(final String fen) {
         final String[] fenParts = fen.split(" ");
-        return new Game(
+        return new ChessGameImpl(
                 toBoard(fenParts[0]),
                 "w".equals(fenParts[1]),
                 Castling.fromString(fenParts[2]),
@@ -30,8 +32,8 @@ public class Fen {
      * @param game game
      * @return fen
      */
-    public static String fromGame(final Game game) {
-        String fen = fromBoard(game.getBoard());
+    static String fromGame(final ChessGame game) {
+        String fen = createBoardPart(game);
         fen = fen + (game.isWhiteTurn() ? " w " : " b ");
         fen = fen + Castling.toString(game.getCastlesPossible());
         fen = fen + " " + AlgebraNotation.fromBitboard(game.getEnPassantTarget());
@@ -40,12 +42,12 @@ public class Fen {
     }
 
     /**
-     * Convert a board into the board part of a FEN string.
+     * Convert a game into the board part of a FEN string.
      *
-     * @param board board
+     * @param game board
      * @return FEN board part
      */
-    public static String fromBoard(final Board board) {
+    static String createBoardPart(final ChessGame game) {
         StringBuilder fen = new StringBuilder();
 
         int currentBlankSpaceCount = 0;
@@ -54,7 +56,7 @@ public class Fen {
             for (int file = 0; file < 8; file++) {
 
                 final int position = (rank * 8) + file;
-                final int piece = board.getPieceAtIndex(position);
+                final int piece = game.getPieceAtIndex(position);
 
                 if (piece == Piece.UNOCCUPIED) {
                     currentBlankSpaceCount++;
@@ -84,7 +86,7 @@ public class Fen {
      * @param fen FEN board part
      * @return board
      */
-    public static Board toBoard(final String fen) {
+    static Board toBoard(final String fen) {
         final Board board = Board.empty();
         int square = 56;
 

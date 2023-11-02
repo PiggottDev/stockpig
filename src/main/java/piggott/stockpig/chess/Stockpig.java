@@ -1,5 +1,9 @@
 package piggott.stockpig.chess;
 
+import piggott.game.*;
+import piggott.stockpig.chess.evaluation.ChessGameEvaluator;
+import piggott.stockpig.chess.game.*;
+
 import java.util.Scanner;
 
 public class Stockpig {
@@ -10,6 +14,7 @@ public class Stockpig {
     private static final String UNDO = "undo";
     private static final String PERFT = "perft";
     private static final String DIVIDE = "divide";
+    private static final String EVAL = "eval";
     private static final String EXIT = "exit";
 
     public static void main(String[] args) {
@@ -21,7 +26,7 @@ public class Stockpig {
         final Scanner in = new Scanner(System.in);
         boolean exit = false;
 
-        Game game = Game.standard();
+        ChessGame game = ChessGame.standard();
 
         while(!exit) {
 
@@ -33,36 +38,41 @@ public class Stockpig {
 
             switch (command[0]) {
                 case NEW:
-                    game = Game.standard();
+                    game = ChessGame.standard();
                     break;
                 case FEN:
                     try {
-                        game = Fen.toGame(input.substring(4));
+                        game = ChessGame.fromFen(input.substring(4));
                     } catch (Exception ex) {
                         System.out.println("Invalid Fen");
                     }
                     break;
                 case MOVE:
-                    for(Move move : game.getPossibleMoves()) {
+                    for(ChessMove move : game.getLegalMoves()) {
                         if (move.toString().equals(command[1])) game.applyMove(move);
                     }
                     break;
                 case UNDO:
-                    game.undoLastMove();
+                    game.undoMove();
                     break;
                 case PERFT:
                     try {
-                        System.out.println(game.movePathEnumerationPerft(Integer.parseInt(command[1])) + " nodes analysed");
+                        System.out.println(new MoveEnumerator<>(game, Integer.parseInt(command[1])).getNodes() + " nodes analysed");
                     } catch (Exception ex) {
                         System.out.println("Invalid Depth");
                     }
                     break;
                 case DIVIDE:
                     try {
-                        System.out.println(game.divide(Integer.parseInt(command[1])) + " nodes analysed");
+                        final MoveDivideEnumerator<ChessMove> test = new MoveDivideEnumerator<>(game, Integer.parseInt(command[1]));
+                        System.out.println(test.getNodes() + " nodes analysed");
+                        System.out.println(test.getDivide().toString());
                     } catch (Exception ex) {
                         System.out.println("Invalid Depth");
                     }
+                    break;
+                case EVAL:
+                    System.out.println("Material = " + ChessGameEvaluator.position().evaluate(game));
                     break;
                 case EXIT:
                     exit = true;

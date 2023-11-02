@@ -1,4 +1,4 @@
-package piggott.stockpig.chess;
+package piggott.stockpig.chess.game;
 
 import org.junit.jupiter.api.Test;
 
@@ -174,7 +174,7 @@ class MoveGeneratorTest {
     @Test
     void generateLegalMoves_illegalEnPassant_true() {
         final MoveGenerator analyser = new MoveGenerator(Fen.toBoard("rnbqk1n1/pppp1p2/8/2KPp2r/8/8/PPP1PPPP/RNBQ1BNR"), true, Castling.ALL_ALLOWED, Bitboard.INDEX[44]);
-        for (Move move : analyser.generateLegalMoves()) {
+        for (ChessMove move : analyser.generateLegalMoves()) {
             assertNotEquals("d5e6", move.toString());
         }
     }
@@ -183,7 +183,7 @@ class MoveGeneratorTest {
     void generateLegalMoves_illegalEnPassant_false() {
         final MoveGenerator analyser = new MoveGenerator(Fen.toBoard("rnbqk1n1/pppp1p2/8/2KPp3/7r/8/PPP1PPPP/RNBQ1BNR"), true, Castling.ALL_ALLOWED, Bitboard.INDEX[44]);
         boolean movePresent = false;
-        for (Move move : analyser.generateLegalMoves()) {
+        for (ChessMove move : analyser.generateLegalMoves()) {
             if (move.toString().equals("d5e6")) movePresent = true;
         }
         assertTrue(movePresent);
@@ -193,7 +193,7 @@ class MoveGeneratorTest {
     void generateLegalMoves_illegalEnPassant_pawnCheck() {
         final MoveGenerator analyser = new MoveGenerator(Fen.toBoard("rnbqk1n1/pppp1p2/8/3Pp3/3K4/8/PPP1PPPP/RNBQ1BNR"), true, Castling.ALL_ALLOWED, Bitboard.INDEX[44]);
         boolean movePresent = false;
-        for (Move move : analyser.generateLegalMoves()) {
+        for (ChessMove move : analyser.generateLegalMoves()) {
             if (move.toString().equals("d5e6")) movePresent = true;
         }
         assertTrue(movePresent);

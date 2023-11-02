@@ -1,4 +1,4 @@
-package piggott.stockpig.chess;
+package piggott.stockpig.chess.game;
 
 /**
  * A bitboard is a bitmap data structure in the form of a single long.
@@ -58,6 +58,8 @@ public class Bitboard {
     private static final long[] INVERSE_BOUNDS = initInverseBounds();
     private static final int[][] FILL_SHIFTS = initFillShifts();
     private static final long[] FILL_AREAS = initFillAreas();
+
+    private Bitboard() {}
 
     /**
      * Check to see if two bitboards have at least one common space.

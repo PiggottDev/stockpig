@@ -2,7 +2,7 @@ plugins {
     id 'application'
 }
 
-group 'dev.piggott'
+group 'piggott'
 version '1.0-SNAPSHOT'
 
 repositories {

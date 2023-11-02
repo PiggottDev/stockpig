@@ -1,17 +1,16 @@
-package piggott.stockpig.chess;
+package piggott.stockpig.chess.game;
 
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class MoveTest {
+class ChessMoveTest {
 
     @Test
     void castle() {
-        final Move move = Move.castle(Bitboard.INDEX[4], Bitboard.INDEX[6], Piece.WHITE | Piece.KING, Bitboard.INDEX[5] | Bitboard.INDEX[7]);
+        final ChessMove move = ChessMove.castle(Bitboard.INDEX[4], Bitboard.INDEX[6], Piece.WHITE | Piece.KING, Bitboard.INDEX[5] | Bitboard.INDEX[7]);
 
         assertEquals(Bitboard.INDEX[4], move.getFrom());
         assertEquals(Bitboard.INDEX[6], move.getTo());
@@ -32,7 +31,7 @@ class MoveTest {
 
     @Test
     void doublePush() {
-        final Move move = Move.doublePush(Bitboard.INDEX[10], Bitboard.INDEX[26], Piece.WHITE | Piece.PAWN, Bitboard.INDEX[18]);
+        final ChessMove move = ChessMove.doublePush(Bitboard.INDEX[10], Bitboard.INDEX[26], Piece.WHITE | Piece.PAWN, Bitboard.INDEX[18]);
 
         assertEquals(Bitboard.INDEX[10], move.getFrom());
         assertEquals(Bitboard.INDEX[26], move.getTo());
@@ -53,7 +52,7 @@ class MoveTest {
 
     @Test
     void enPassantCapture() {
-        final Move move = Move.enPassantCapture(Bitboard.INDEX[24], Bitboard.INDEX[33], Piece.WHITE | Piece.PAWN, Piece.BLACK | Piece.PAWN, Bitboard.INDEX[25]);
+        final ChessMove move = ChessMove.enPassantCapture(Bitboard.INDEX[24], Bitboard.INDEX[33], Piece.WHITE | Piece.PAWN, Piece.BLACK | Piece.PAWN, Bitboard.INDEX[25]);
 
         assertEquals(Bitboard.INDEX[24], move.getFrom());
         assertEquals(Bitboard.INDEX[33], move.getTo());
@@ -75,7 +74,7 @@ class MoveTest {
 
     @Test
     void pawnPromotionWithCapture() {
-        final Move move = Move.pawnPromotionWithCapture(Bitboard.INDEX[54], Bitboard.INDEX[63], Piece.WHITE | Piece.PAWN, Piece.KNIGHT, Piece.WHITE | Piece.ROOK);
+        final ChessMove move = ChessMove.pawnPromotionWithCapture(Bitboard.INDEX[54], Bitboard.INDEX[63], Piece.WHITE | Piece.PAWN, Piece.KNIGHT, Piece.WHITE | Piece.ROOK);
 
         assertEquals(Bitboard.INDEX[54], move.getFrom());
         assertEquals(Bitboard.INDEX[63], move.getTo());
@@ -96,7 +95,7 @@ class MoveTest {
 
     @Test
     void pawnPromotion() {
-        final Move move = Move.pawnPromotion(Bitboard.INDEX[15], Bitboard.INDEX[7], Piece.PAWN, Piece.KNIGHT);
+        final ChessMove move = ChessMove.pawnPromotion(Bitboard.INDEX[15], Bitboard.INDEX[7], Piece.PAWN, Piece.KNIGHT);
 
         assertEquals(Bitboard.INDEX[15], move.getFrom());
         assertEquals(Bitboard.INDEX[7], move.getTo());
@@ -117,7 +116,7 @@ class MoveTest {
 
     @Test
     void basicCapture() {
-        final Move move = Move.basicCapture(Bitboard.INDEX[42], Bitboard.INDEX[32], Piece.QUEEN, Piece.WHITE | Piece.BISHOP);
+        final ChessMove move = ChessMove.basicCapture(Bitboard.INDEX[42], Bitboard.INDEX[32], Piece.QUEEN, Piece.WHITE | Piece.BISHOP);
 
         assertEquals(Bitboard.INDEX[42], move.getFrom());
         assertEquals(Bitboard.INDEX[32], move.getTo());
@@ -138,7 +137,7 @@ class MoveTest {
 
     @Test
     void basicMove() {
-        final Move move = Move.basicMove(Bitboard.INDEX[57], Bitboard.INDEX[12], Piece.QUEEN);
+        final ChessMove move = ChessMove.basicMove(Bitboard.INDEX[57], Bitboard.INDEX[12], Piece.QUEEN);
 
         assertEquals(Bitboard.INDEX[57], move.getFrom());
         assertEquals(Bitboard.INDEX[12], move.getTo());
@@ -158,17 +157,9 @@ class MoveTest {
     }
 
     @Test
-    void testEquals() {
-        final Move move = Move.castle(Bitboard.INDEX[4], Bitboard.INDEX[6], Piece.WHITE | Piece.KING, Bitboard.INDEX[5] | Bitboard.INDEX[7]);
-        assertNotEquals(null, move);
-        assertNotEquals(move, Move.castle(Bitboard.INDEX[3], Bitboard.INDEX[6], Piece.WHITE | Piece.KING, Bitboard.INDEX[5] | Bitboard.INDEX[7]));
-        assertEquals(move, Move.castle(Bitboard.INDEX[4], Bitboard.INDEX[6], Piece.WHITE | Piece.KING, Bitboard.INDEX[5] | Bitboard.INDEX[7]));
-    }
-
-    @Test
     void toString_test() {
-        assertEquals("a1h8", Move.basicMove(Bitboard.INDEX[0], Bitboard.INDEX[63], Piece.WHITE | Piece.PAWN).toString());
-        assertEquals("a1h8Q", Move.pawnPromotion(Bitboard.INDEX[0], Bitboard.INDEX[63], Piece.WHITE | Piece.PAWN, Piece.WHITE | Piece.QUEEN).toString());
+        assertEquals("a1h8", ChessMove.basicMove(Bitboard.INDEX[0], Bitboard.INDEX[63], Piece.WHITE | Piece.PAWN).toString());
+        assertEquals("a1h8Q", ChessMove.pawnPromotion(Bitboard.INDEX[0], Bitboard.INDEX[63], Piece.WHITE | Piece.PAWN, Piece.WHITE | Piece.QUEEN).toString());
     }
 
 }

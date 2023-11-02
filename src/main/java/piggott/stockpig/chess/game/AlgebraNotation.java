@@ -1,4 +1,4 @@
-package piggott.stockpig.chess;
+package piggott.stockpig.chess.game;
 
 /**
  * Provides methods for converting to and from algebra notation (a1 ... h8).
@@ -6,6 +6,8 @@ package piggott.stockpig.chess;
  * @see Bitboard
  */
 public class AlgebraNotation {
+
+    private AlgebraNotation() {}
 
     /**
      * Parse algebra notation into 0-63 square index.
