@@ -1,4 +1,5 @@
 plugins {
+    id 'java'
     id 'application'
 }
 
@@ -15,7 +16,7 @@ dependencies {
 }
 
 run {
-    mainClass = 'piggott.stockpig.chess.Stockpig'
+    mainClass = 'piggott.stockpig.chess.gui.StockpigGUI'
     standardInput = System.in
 }
 

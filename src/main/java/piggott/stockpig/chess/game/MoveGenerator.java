@@ -45,7 +45,7 @@ class MoveGenerator {
     private static final int DIAGONAL_NEGATIVE = 3;
 
     // List for pushing moves to
-    private final List<ChessMove> moves = new ArrayList<>();
+    private final List<ChessMove> moves = new ArrayList<>(100);
 
     MoveGenerator(final Board board, final boolean isWhiteTurn, final int castlesAllowed, final long enPassantTarget) {
         this.board = board;

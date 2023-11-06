@@ -8,7 +8,7 @@ package piggott.game;
  *
  * @param <M> move implementation class
  */
-public interface PartisanGame<M extends CombinatorialGame.Move> extends CombinatorialGame<M> {
+public interface PartisanGame<M extends PartisanGame.Move> extends CombinatorialGame<M> {
 
     /**
      * Is it player ones turn.

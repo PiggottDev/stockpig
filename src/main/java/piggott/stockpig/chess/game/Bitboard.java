@@ -1,5 +1,7 @@
 package piggott.stockpig.chess.game;
 
+import java.util.function.Consumer;
+
 /**
  * A bitboard is a bitmap data structure in the form of a single long.
  * Each bit in the long represents the presence/absence on a given chess square.
@@ -60,6 +62,30 @@ public class Bitboard {
     private static final long[] FILL_AREAS = initFillAreas();
 
     private Bitboard() {}
+
+    /**
+     * Get the square index of the lowest one bit of a bitboard.
+     *
+     * @param bitboard bitboard
+     * @return square index
+     */
+    public static int toIndex(final long bitboard) {
+        return Long.numberOfTrailingZeros(bitboard);
+    }
+
+    /**
+     * Call the consumer with each single bit in the bitboard.
+     *
+     * @param bitboard bitboard
+     * @param consumer bitboard consumer
+     */
+    public static void forEachBit(long bitboard, final Consumer<Long> consumer) {
+        while (bitboard != 0L) {
+            final long bit = Long.lowestOneBit(bitboard);
+            consumer.accept(bit);
+            bitboard ^= bit;
+        }
+    }
 
     /**
      * Check to see if two bitboards have at least one common space.
@@ -181,6 +207,16 @@ public class Bitboard {
      */
     public static long shift(final long bitboard, final int shift) {
         return shift < 0 ? bitboard >>> -shift : bitboard << shift;
+    }
+
+    /**
+     * Flip a bitboard vertically.
+     *
+     * @param bitboard bitboard
+     * @return flipped bitboard
+     */
+    public static long flipVertical(final long bitboard) {
+        return Long.reverseBytes(bitboard);
     }
 
     /**
