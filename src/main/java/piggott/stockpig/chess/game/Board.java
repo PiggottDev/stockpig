@@ -4,6 +4,8 @@ package piggott.stockpig.chess.game;
  * Stores all square and piece data of a chess board.
  * An array of longs is used with each long being an occupancy bitboard of each piece/team.
  * The index of the array represents the piece.
+ * A redundant mailbox array is also used to speed up identifying which piece (if any) is at a
+ * given square index.
  *
  * @see Piece
  * @see Bitboard
@@ -11,9 +13,11 @@ package piggott.stockpig.chess.game;
 class Board {
 
     private final long[] pieceBitboards;
+    private final int[] pieceSquares;
 
-    private Board(final long[] pieceBitboards) {
+    private Board(final long[] pieceBitboards, final int[] pieceSquares) {
         this.pieceBitboards = pieceBitboards;
+        this.pieceSquares = pieceSquares;
     }
 
     /**
@@ -22,28 +26,22 @@ class Board {
      * @return board with standard starting position
      */
     static Board standard() {
-        final long[] pieceBitboards = new long[15];
-        //Add unoccupied squares
-        pieceBitboards[Piece.UNOCCUPIED] = Bitboard.RANKS[2] | Bitboard.RANKS[3] | Bitboard.RANKS[4] | Bitboard.RANKS[5];
+        final Board board = Board.empty();
+        board.addPiece(Piece.WHITE | Piece.ROOK, Bitboard.INDEX[0] | Bitboard.INDEX[7]);
+        board.addPiece(Piece.WHITE | Piece.KNIGHT, Bitboard.INDEX[1] | Bitboard.INDEX[6]);
+        board.addPiece(Piece.WHITE | Piece.BISHOP, Bitboard.INDEX[2] | Bitboard.INDEX[5]);
+        board.addPiece(Piece.WHITE | Piece.QUEEN, Bitboard.INDEX[3]);
+        board.addPiece(Piece.WHITE | Piece.KING, Bitboard.INDEX[4]);
+        board.addPiece(Piece.WHITE | Piece.PAWN, Bitboard.RANKS[1]);
 
-        //Add Black team
-        pieceBitboards[Piece.BLACK] = Bitboard.RANKS[6] | Bitboard.RANKS[7];
-        pieceBitboards[Piece.KING] = Bitboard.INDEX[60];
-        pieceBitboards[Piece.PAWN] = Bitboard.RANKS[6];
-        pieceBitboards[Piece.KNIGHT] = Bitboard.INDEX[57] | Bitboard.INDEX[62];
-        pieceBitboards[Piece.BISHOP] = Bitboard.INDEX[58] | Bitboard.INDEX[61];
-        pieceBitboards[Piece.ROOK] = Bitboard.INDEX[56] | Bitboard.INDEX[63];
-        pieceBitboards[Piece.QUEEN] = Bitboard.INDEX[59];
+        board.addPiece(Piece.ROOK, Bitboard.INDEX[56] | Bitboard.INDEX[63]);
+        board.addPiece(Piece.KNIGHT, Bitboard.INDEX[57] | Bitboard.INDEX[62]);
+        board.addPiece(Piece.BISHOP, Bitboard.INDEX[58] | Bitboard.INDEX[61]);
+        board.addPiece(Piece.QUEEN, Bitboard.INDEX[59]);
+        board.addPiece(Piece.KING, Bitboard.INDEX[60]);
+        board.addPiece(Piece.PAWN, Bitboard.RANKS[6]);
 
-        //Add white team
-        pieceBitboards[Piece.WHITE] = Bitboard.RANKS[0] | Bitboard.RANKS[1];
-        pieceBitboards[Piece.WHITE | Piece.KING] = Bitboard.INDEX[4];
-        pieceBitboards[Piece.WHITE | Piece.PAWN] = Bitboard.RANKS[1];
-        pieceBitboards[Piece.WHITE | Piece.KNIGHT] = Bitboard.INDEX[1] | Bitboard.INDEX[6];
-        pieceBitboards[Piece.WHITE | Piece.BISHOP] = Bitboard.INDEX[2] | Bitboard.INDEX[5];
-        pieceBitboards[Piece.WHITE | Piece.ROOK] = Bitboard.INDEX[0] | Bitboard.INDEX[7];
-        pieceBitboards[Piece.WHITE | Piece.QUEEN] = Bitboard.INDEX[3];
-        return new Board(pieceBitboards);
+        return board;
     }
 
     /**
@@ -53,8 +51,12 @@ class Board {
      */
     static Board empty() {
         final long[] pieceBitboards = new long[15];
+        final int[] pieceSquares = new int[64];
         pieceBitboards[Piece.UNOCCUPIED] = Bitboard.ALL;
-        return new Board(pieceBitboards);
+        for (int i = 0; i < 64; i++) {
+            pieceSquares[i] = Piece.UNOCCUPIED;
+        }
+        return new Board(pieceBitboards, pieceSquares);
     }
 
     /**
@@ -103,7 +105,7 @@ class Board {
      * @return bitboard
      */
     long getPieceBitboard(final int piece) {
-        return pieceBitboards[piece];
+        return this.pieceBitboards[piece];
     }
 
     /**
@@ -113,9 +115,10 @@ class Board {
      * @param bitboard bitboard
      */
     void addPiece(final int piece, final long bitboard) {
-        pieceBitboards[piece] |= bitboard;
-        pieceBitboards[Piece.getTeamOnly(piece)] |= bitboard;
-        pieceBitboards[Piece.UNOCCUPIED] &= ~bitboard;
+        this.pieceBitboards[piece] |= bitboard;
+        this.pieceBitboards[Piece.getTeamOnly(piece)] |= bitboard;
+        this.pieceBitboards[Piece.UNOCCUPIED] &= ~bitboard;
+        Bitboard.forEachBit(bitboard, b -> this.pieceSquares[Bitboard.toIndex(b)] =  piece);
     }
 
     /**
@@ -125,9 +128,10 @@ class Board {
      * @param bitboard bitboard
      */
     void removePiece(final int piece, final long bitboard) {
-        pieceBitboards[piece] &= ~bitboard;
-        pieceBitboards[Piece.getTeamOnly(piece)] &= ~bitboard;
-        pieceBitboards[Piece.UNOCCUPIED] |= bitboard;
+        this.pieceBitboards[piece] &= ~bitboard;
+        this.pieceBitboards[Piece.getTeamOnly(piece)] &= ~bitboard;
+        this.pieceBitboards[Piece.UNOCCUPIED] |= bitboard;
+        Bitboard.forEachBit(bitboard, b -> this.pieceSquares[Bitboard.toIndex(b)] = Piece.UNOCCUPIED);
     }
 
     /**
@@ -137,37 +141,17 @@ class Board {
      * @return piece
      */
     int getPieceAtBit(final long bitboard) {
-        if (Bitboard.intersects(bitboard, pieceBitboards[Piece.UNOCCUPIED])) return Piece.UNOCCUPIED;
-
-        return Bitboard.intersects(bitboard, pieceBitboards[Piece.WHITE])  ? getPieceAtBitFromTeam(bitboard,true) : getPieceAtBitFromTeam(bitboard,false);
+        return getPieceAtIndex(Bitboard.toIndex(bitboard));
     }
 
     /**
-     * Get the piece at a given bit that is on the given team.
+     * Get the piece at a given square index.
      *
-     * @param bitboard bit to retrieve piece for
-     * @param team the team that the piece belongs to
+     * @param index square index
      * @return piece
      */
-    int getPieceAtBitFromTeam(final long bitboard, final boolean team) {
-        return getPieceAtBitFromTeam(bitboard, Piece.getTeam(team));
-    }
-
-    /**
-     * Get the piece at a given bit that is on the given team.
-     *
-     * @param bitboard bit to retrieve piece for
-     * @param team the team that the piece belongs to
-     * @return piece
-     */
-    int getPieceAtBitFromTeam(final long bitboard, final int team) {
-        final int startPiece = team | Piece.KING;
-        final int endPiece = startPiece | Piece.QUEEN;
-
-        for (int piece = startPiece; piece < endPiece; piece++) {
-            if (Bitboard.intersects(bitboard, pieceBitboards[piece])) return piece;
-        }
-        return Piece.UNOCCUPIED;
+    int getPieceAtIndex(final int index) {
+        return this.pieceSquares[index];
     }
 
     // -- Moves --
@@ -179,37 +163,45 @@ class Board {
      */
     void applyMove(final ChessMove move) {
         // Remove the moving piece from it's start location
-        pieceBitboards[move.getMovingPiece()] &= ~move.getFrom();
-        pieceBitboards[Piece.UNOCCUPIED] |= move.getFrom();
+        this.pieceBitboards[move.getMovingPiece()] &= ~move.getFrom();
+        this.pieceBitboards[Piece.UNOCCUPIED] |= move.getFrom();
+        this.pieceSquares[Bitboard.toIndex(move.getFrom())] = Piece.UNOCCUPIED;
 
         // Flip the teams To and From bits
-        pieceBitboards[Piece.getTeamOnly(move.getMovingPiece())] ^= (move.getFrom() | move.getTo());
+        this.pieceBitboards[Piece.getTeamOnly(move.getMovingPiece())] ^= (move.getFrom() | move.getTo());
 
         // Mark the To bit as occupied
-        pieceBitboards[Piece.UNOCCUPIED] &= ~move.getTo();
+        this.pieceBitboards[Piece.UNOCCUPIED] &= ~move.getTo();
 
         // Add the correct piece at the To location
         if (move.isPromotion()) {
-            pieceBitboards[move.getPromotedToPiece()] |= move.getTo();
+            this.pieceBitboards[move.getPromotedToPiece()] |= move.getTo();
+            this.pieceSquares[Bitboard.toIndex(move.getTo())] = move.getPromotedToPiece();
         } else {
-            pieceBitboards[move.getMovingPiece()] |= move.getTo();
+            this.pieceBitboards[move.getMovingPiece()] |= move.getTo();
+            this.pieceSquares[Bitboard.toIndex(move.getTo())] = move.getMovingPiece();
         }
 
         // Remove any captured pieces, if en passant then the target square is different
         if (move.isEnPassant()) {
-            pieceBitboards[move.getCapturedPiece()] &= ~move.getCapturedEnPassantPawn();
-            pieceBitboards[Piece.getTeamOnly(move.getCapturedPiece())] &= ~move.getCapturedEnPassantPawn();
-            pieceBitboards[Piece.UNOCCUPIED] |= move.getCapturedEnPassantPawn();
+            this.pieceBitboards[move.getCapturedPiece()] &= ~move.getCapturedEnPassantPawn();
+            this.pieceBitboards[Piece.getTeamOnly(move.getCapturedPiece())] &= ~move.getCapturedEnPassantPawn();
+            this.pieceBitboards[Piece.UNOCCUPIED] |= move.getCapturedEnPassantPawn();
+            this.pieceSquares[Bitboard.toIndex(move.getCapturedEnPassantPawn())] = Piece.UNOCCUPIED;
         } else if (move.isCapture()) {
-            pieceBitboards[move.getCapturedPiece()] &= ~move.getTo();
-            pieceBitboards[Piece.getTeamOnly(move.getCapturedPiece())] &= ~move.getTo();
+            this.pieceBitboards[move.getCapturedPiece()] &= ~move.getTo();
+            this.pieceBitboards[Piece.getTeamOnly(move.getCapturedPiece())] &= ~move.getTo();
         }
 
         // Apply the castle move if present
         if (move.isCastle()) {
-            pieceBitboards[Piece.getSameTeamRook(move.getMovingPiece())] ^= move.getCastleRookMove();
-            pieceBitboards[Piece.getTeamOnly(move.getMovingPiece())] ^= move.getCastleRookMove();
-            pieceBitboards[Piece.UNOCCUPIED] ^= move.getCastleRookMove();
+            final long rookFrom = move.getCastleRookMove() & this.pieceBitboards[Piece.getSameTeamRook(move.getMovingPiece())];
+            final long rookTo = move.getCastleRookMove() ^ rookFrom;
+            this.pieceBitboards[Piece.getSameTeamRook(move.getMovingPiece())] ^= move.getCastleRookMove();
+            this.pieceBitboards[Piece.getTeamOnly(move.getMovingPiece())] ^= move.getCastleRookMove();
+            this.pieceBitboards[Piece.UNOCCUPIED] ^= move.getCastleRookMove();
+            this.pieceSquares[Bitboard.toIndex(rookFrom)] = Piece.UNOCCUPIED;
+            this.pieceSquares[Bitboard.toIndex(rookTo)] = Piece.getSameTeamRook(move.getMovingPiece());
         }
     }
 
@@ -220,36 +212,44 @@ class Board {
      */
     void undoMove(final ChessMove move) {
         // Add the moving piece back where it started
-        pieceBitboards[move.getMovingPiece()] |= move.getFrom();
-        pieceBitboards[Piece.UNOCCUPIED] &= ~move.getFrom();
+        this.pieceBitboards[move.getMovingPiece()] |= move.getFrom();
+        this.pieceBitboards[Piece.UNOCCUPIED] &= ~move.getFrom();
+        this.pieceSquares[Bitboard.toIndex(move.getFrom())] = move.getMovingPiece();
 
         // Flip the teams To and From bits
-        pieceBitboards[Piece.getTeamOnly(move.getMovingPiece())] ^= (move.getFrom() | move.getTo());
+        this.pieceBitboards[Piece.getTeamOnly(move.getMovingPiece())] ^= (move.getFrom() | move.getTo());
 
         // Remove the correct piece from the To location
         if (move.isPromotion()) {
-            pieceBitboards[move.getPromotedToPiece()] &= ~move.getTo();
+            this.pieceBitboards[move.getPromotedToPiece()] &= ~move.getTo();
         } else {
-            pieceBitboards[move.getMovingPiece()] &= ~move.getTo();
+            this.pieceBitboards[move.getMovingPiece()] &= ~move.getTo();
         }
-        pieceBitboards[Piece.UNOCCUPIED] |= move.getTo();
+        this.pieceBitboards[Piece.UNOCCUPIED] |= move.getTo();
+        this.pieceSquares[Bitboard.toIndex(move.getTo())] = Piece.UNOCCUPIED;
 
         // Undo the capture if present
         if (move.isEnPassant()) {
-            pieceBitboards[move.getCapturedPiece()] |= move.getCapturedEnPassantPawn();
-            pieceBitboards[Piece.getTeamOnly(move.getCapturedPiece())] |= move.getCapturedEnPassantPawn();
-            pieceBitboards[Piece.UNOCCUPIED] &= ~move.getCapturedEnPassantPawn();
+            this.pieceBitboards[move.getCapturedPiece()] |= move.getCapturedEnPassantPawn();
+            this.pieceBitboards[Piece.getTeamOnly(move.getCapturedPiece())] |= move.getCapturedEnPassantPawn();
+            this.pieceBitboards[Piece.UNOCCUPIED] &= ~move.getCapturedEnPassantPawn();
+            this.pieceSquares[Bitboard.toIndex(move.getCapturedEnPassantPawn())] = move.getCapturedPiece();
         } else if (move.isCapture()) {
-            pieceBitboards[move.getCapturedPiece()] |= move.getTo();
-            pieceBitboards[Piece.getTeamOnly(move.getCapturedPiece())] |= move.getTo();
-            pieceBitboards[Piece.UNOCCUPIED] &= ~move.getTo();
+            this.pieceBitboards[move.getCapturedPiece()] |= move.getTo();
+            this.pieceBitboards[Piece.getTeamOnly(move.getCapturedPiece())] |= move.getTo();
+            this.pieceBitboards[Piece.UNOCCUPIED] &= ~move.getTo();
+            this.pieceSquares[Bitboard.toIndex(move.getTo())] = move.getCapturedPiece();
         }
 
         // Undo the castle move if present
         if (move.isCastle()) {
-            pieceBitboards[Piece.getSameTeamRook(move.getMovingPiece())] ^= move.getCastleRookMove();
-            pieceBitboards[Piece.getTeamOnly(move.getMovingPiece())] ^= move.getCastleRookMove();
-            pieceBitboards[Piece.UNOCCUPIED] ^= move.getCastleRookMove();
+            final long rookTo = move.getCastleRookMove() & this.pieceBitboards[Piece.getSameTeamRook(move.getMovingPiece())];
+            final long rookFrom = move.getCastleRookMove() ^ rookTo;
+            this.pieceBitboards[Piece.getSameTeamRook(move.getMovingPiece())] ^= move.getCastleRookMove();
+            this.pieceBitboards[Piece.getTeamOnly(move.getMovingPiece())] ^= move.getCastleRookMove();
+            this.pieceBitboards[Piece.UNOCCUPIED] ^= move.getCastleRookMove();
+            this.pieceSquares[Bitboard.toIndex(rookTo)] = Piece.UNOCCUPIED;
+            this.pieceSquares[Bitboard.toIndex(rookFrom)] = Piece.getSameTeamRook(move.getMovingPiece());
         }
     }
 

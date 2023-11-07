@@ -96,6 +96,16 @@ public class ChessGameImpl implements ChessGame {
     }
 
     @Override
+    public int getPieceAtIndex(final int index) {
+        return this.board.getPieceAtIndex(index);
+    }
+
+    @Override
+    public int getPieceAtAlgebraNotation(final String algebra) {
+        return getPieceAtIndex(AlgebraNotation.toIndex(algebra));
+    }
+
+    @Override
     public int getTurnNumber() {
         return this.turnNumber;
     }

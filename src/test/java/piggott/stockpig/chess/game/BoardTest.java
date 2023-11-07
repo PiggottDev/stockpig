@@ -264,37 +264,37 @@ class BoardTest {
     }
 
     @Test
-    void getPieceAtBitFromTeam() {
+    void getPieceAtBit() {
         final Board board = Board.standard();
-        assertEquals(Piece.WHITE | Piece.ROOK, board.getPieceAtBitFromTeam(Bitboard.INDEX[0], true));
-        assertEquals(Piece.WHITE | Piece.KING, board.getPieceAtBitFromTeam(Bitboard.INDEX[4], true));
-        assertEquals(Piece.WHITE | Piece.PAWN, board.getPieceAtBitFromTeam(Bitboard.INDEX[15], true));
-        assertEquals(Piece.WHITE | Piece.QUEEN, board.getPieceAtBitFromTeam(Bitboard.INDEX[3], true));
+        assertEquals(Piece.WHITE | Piece.ROOK, board.getPieceAtBit(Bitboard.INDEX[0]));
+        assertEquals(Piece.WHITE | Piece.KING, board.getPieceAtBit(Bitboard.INDEX[4]));
+        assertEquals(Piece.WHITE | Piece.PAWN, board.getPieceAtBit(Bitboard.INDEX[15]));
+        assertEquals(Piece.WHITE | Piece.QUEEN, board.getPieceAtBit(Bitboard.INDEX[3]));
 
-        assertEquals(Piece.BLACK | Piece.ROOK, board.getPieceAtBitFromTeam(Bitboard.INDEX[63], false));
-        assertEquals(Piece.BLACK | Piece.KING, board.getPieceAtBitFromTeam(Bitboard.INDEX[60], false));
-        assertEquals(Piece.BLACK | Piece.PAWN, board.getPieceAtBitFromTeam(Bitboard.INDEX[54], false));
-        assertEquals(Piece.BLACK | Piece.QUEEN, board.getPieceAtBitFromTeam(Bitboard.INDEX[59], false));
+        assertEquals(Piece.BLACK | Piece.ROOK, board.getPieceAtBit(Bitboard.INDEX[63]));
+        assertEquals(Piece.BLACK | Piece.KING, board.getPieceAtBit(Bitboard.INDEX[60]));
+        assertEquals(Piece.BLACK | Piece.PAWN, board.getPieceAtBit(Bitboard.INDEX[54]));
+        assertEquals(Piece.BLACK | Piece.QUEEN, board.getPieceAtBit(Bitboard.INDEX[59]));
 
-        assertEquals(Piece.UNOCCUPIED, board.getPieceAtBitFromTeam(Bitboard.INDEX[43], true));
-        assertEquals(Piece.UNOCCUPIED, board.getPieceAtBitFromTeam(Bitboard.INDEX[25], false));
+        assertEquals(Piece.UNOCCUPIED, board.getPieceAtBit(Bitboard.INDEX[43]));
+        assertEquals(Piece.UNOCCUPIED, board.getPieceAtBit(Bitboard.INDEX[25]));
     }
 
     @Test
     void testGetPieceAtBitFromTeam() {
         final Board board = Board.standard();
-        assertEquals(Piece.WHITE | Piece.ROOK, board.getPieceAtBitFromTeam(Bitboard.INDEX[0], Piece.WHITE));
-        assertEquals(Piece.WHITE | Piece.KING, board.getPieceAtBitFromTeam(Bitboard.INDEX[4], Piece.WHITE));
-        assertEquals(Piece.WHITE | Piece.PAWN, board.getPieceAtBitFromTeam(Bitboard.INDEX[15], Piece.WHITE));
-        assertEquals(Piece.WHITE | Piece.QUEEN, board.getPieceAtBitFromTeam(Bitboard.INDEX[3], Piece.WHITE));
+        assertEquals(Piece.WHITE | Piece.ROOK, board.getPieceAtBit(Bitboard.INDEX[0]));
+        assertEquals(Piece.WHITE | Piece.KING, board.getPieceAtBit(Bitboard.INDEX[4]));
+        assertEquals(Piece.WHITE | Piece.PAWN, board.getPieceAtBit(Bitboard.INDEX[15]));
+        assertEquals(Piece.WHITE | Piece.QUEEN, board.getPieceAtBit(Bitboard.INDEX[3]));
 
-        assertEquals(Piece.BLACK | Piece.ROOK, board.getPieceAtBitFromTeam(Bitboard.INDEX[63], Piece.BLACK));
-        assertEquals(Piece.BLACK | Piece.KING, board.getPieceAtBitFromTeam(Bitboard.INDEX[60], Piece.BLACK));
-        assertEquals(Piece.BLACK | Piece.PAWN, board.getPieceAtBitFromTeam(Bitboard.INDEX[54], Piece.BLACK));
-        assertEquals(Piece.BLACK | Piece.QUEEN, board.getPieceAtBitFromTeam(Bitboard.INDEX[59], Piece.BLACK));
+        assertEquals(Piece.BLACK | Piece.ROOK, board.getPieceAtBit(Bitboard.INDEX[63]));
+        assertEquals(Piece.BLACK | Piece.KING, board.getPieceAtBit(Bitboard.INDEX[60]));
+        assertEquals(Piece.BLACK | Piece.PAWN, board.getPieceAtBit(Bitboard.INDEX[54]));
+        assertEquals(Piece.BLACK | Piece.QUEEN, board.getPieceAtBit(Bitboard.INDEX[59]));
 
-        assertEquals(Piece.UNOCCUPIED, board.getPieceAtBitFromTeam(Bitboard.INDEX[43], Piece.WHITE));
-        assertEquals(Piece.UNOCCUPIED, board.getPieceAtBitFromTeam(Bitboard.INDEX[25], Piece.BLACK));
+        assertEquals(Piece.UNOCCUPIED, board.getPieceAtBit(Bitboard.INDEX[43]));
+        assertEquals(Piece.UNOCCUPIED, board.getPieceAtBit(Bitboard.INDEX[25]));
     }
 
     @Test
