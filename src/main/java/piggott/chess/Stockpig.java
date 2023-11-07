@@ -4,7 +4,6 @@ import piggott.chess.evaluation.ChessGameEvaluator;
 import piggott.chess.game.ChessGame;
 import piggott.chess.game.ChessMove;
 import piggott.game.*;
-import piggott.stockpig.chess.game.*;
 
 import java.util.Scanner;
 

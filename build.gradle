@@ -16,7 +16,7 @@ dependencies {
 }
 
 run {
-    mainClass = 'piggott.stockpig.chess.gui.StockpigGUI'
+    mainClass = 'piggott.chess.gui.StockpigGUI'
     standardInput = System.in
 }
 
