@@ -18,10 +18,10 @@ public class ChessGameImpl implements ChessGame {
     private int turnsSincePushOrCapture;
     private int turnNumber;
 
-    private final List<ChessMove> previousMoves = new ArrayList<>();
-    private final List<Integer> previousCastlesPossible = new ArrayList<>();
-    private final List<Long> previousEnPassantTargets = new ArrayList<>();
-    private final List<Integer> previousTurnSincePushOrCapture = new ArrayList<>();
+    private final List<ChessMove> previousMoves = new ArrayList<>(100);
+    private final List<Integer> previousCastlesPossible = new ArrayList<>(100);
+    private final List<Long> previousEnPassantTargets = new ArrayList<>(100);
+    private final List<Integer> previousTurnSincePushOrCapture = new ArrayList<>(100);
 
     private List<ChessMove> legalMoves;
     private MoveGenerator moveGenerator;
